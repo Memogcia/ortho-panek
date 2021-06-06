@@ -2,6 +2,7 @@ import Header from '../components/Header'
 import Login from "../components/Auth/Login";
 import TodoPrivateWrapper from "../components/Todo/TodoPrivateWrapper";
 import TodoPublicWrapper from "../components/Todo/TodoPublicWrapper";
+import { withApollo } from '../lib/withApollo'
 import OnlineUsersWrapper from "../components/OnlineUsers/OnlineUsersWrapper";
 
 import { useFetchUser } from '../lib/user'
@@ -36,4 +37,4 @@ const IndexPage = () => {
   )
 }
 
-export default IndexPage
+export default withApollo()(IndexPage)
