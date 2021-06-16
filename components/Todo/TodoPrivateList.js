@@ -1,19 +1,28 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 
-import TodoItem from "./TodoItem";
 import TodoFilters from "./TodoFilters";
+import TodoItem from "./TodoItem";
 import gql from 'graphql-tag';
+import { useMutation } from "@apollo/react-hooks";
 import {useQuery} from '@apollo/react-hooks';
 
 const GET_MY_TODOS = gql`
-query getMyTodos {
-  todos(where: { is_public: { _eq: false} }, order_by: { created_at: desc }) {
-    id
-    title
-    created_at
-    is_completed
-}
+  query getMyTodos {
+    todos(where: { is_public: { _eq: false} }, order_by: { created_at: desc }) {
+      id
+      title
+      created_at
+      is_completed
+  }
 }`;
+
+const CLEAR_COMPLETED = gql`
+  mutation clearCompleted {
+    delete_todos(where: {is_completed: {_eq: true}, is_public: {_eq: false}}) {
+      affected_rows
+    }
+  }
+`;
 
 const TodoPrivateList = props => {
   const [state, setState] = useState({
@@ -29,7 +38,18 @@ const TodoPrivateList = props => {
     });
   };
 
-  const clearCompleted = () => {};
+  const [clearCompletedTodos] = useMutation(CLEAR_COMPLETED);
+
+  const clearCompleted = () => {
+    clearCompletedTodos({
+      optimisticResponse: true,
+      update: (cache, {data}) => {
+        const existingTodos = cache.readQuery({ query: GET_MY_TODOS });
+        const newTodos = existingTodos.todos.filter(t => (!t.is_completed));
+        cache.writeQuery({query:GET_MY_TODOS, data: {todos: newTodos}});
+      }
+    });
+  };
 
   const {todos} = props;
 
