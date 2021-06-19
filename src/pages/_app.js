@@ -8,7 +8,13 @@ import Head from 'next/head';
 import theme from 'defaultTheme';
 
 function MyApp({ Component, pageProps }) {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined') {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+      </ThemeProvider>
+    );
+  }
   return (
     <UserProvider>
       <ThemeProvider theme={theme}>
