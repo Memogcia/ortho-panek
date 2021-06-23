@@ -1,4 +1,4 @@
-import Router from 'next/router'
+import Router from "next/router";
 
 import { Button } from "react-bootstrap";
 
@@ -16,7 +16,7 @@ const Login = () => {
             variant="primary"
             className="btn-margin loginBtn"
             onClick={() => {
-              Router.push('/api/login');
+              Router.push("/api/login");
             }}
           >
             Log In
