@@ -34,7 +34,6 @@ app.use("*", async (req, res, next) => {
         const bodyData = JSON.stringify(req.body);
         proxyReq.setHeader("Content-Type", "application/json");
         proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
-        proxyReq.setHeader("x-hasura-admin-secret", process.env.HASURA_SECRET);
         // stream the content
         proxyReq.write(bodyData);
       }
