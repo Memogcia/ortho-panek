@@ -7,10 +7,12 @@ import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import Head from 'next/head';
 import theme from 'defaultTheme';
 import { ApolloProvider } from '@apollo/client';
-import client from 'lib/apollo-client';
+import { useApollo } from 'lib/apollo-client';
 import ClientOnly from 'components/ClientOnly';
 
 function MyApp({ Component, pageProps }) {
+  const apolloClient = useApollo(pageProps.initialApolloState);
+
   if (typeof window === 'undefined') {
     return (
       <ThemeProvider theme={theme}>
@@ -18,9 +20,10 @@ function MyApp({ Component, pageProps }) {
       </ThemeProvider>
     );
   }
+
   return (
     <UserProvider>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={apolloClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Head>
@@ -41,12 +44,14 @@ function MyApp({ Component, pageProps }) {
 
 MyApp.propTypes = {
   Component: PropTypes.func,
-  pageProps: PropTypes.shape({}),
+  pageProps: PropTypes.shape({ initialApolloState: {} }),
 };
 
 MyApp.defaultProps = {
   Component: null,
-  pageProps: {},
+  pageProps: {
+    initialApolloState: {},
+  },
 };
 
 export default MyApp;
