@@ -1,20 +1,20 @@
-import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import React from "react";
+import { useQuery, gql } from "@apollo/client";
 
 const QUERY = gql`
-    query MyQuery {
-        todos {
-            title
-            user {
-                name
-            }
-        }
+  query MyQuery {
+    todos {
+      title
+      user {
+        name
+      }
     }
+  }
 `;
 
 function todos() {
   const { data, loading, error } = useQuery(QUERY);
-  console.log('🚀 ~ file: todos.js ~ line 17 ~ todos ~ data', data);
+  console.log("🚀 ~ file: todos.js ~ line 17 ~ todos ~ data", data);
 
   if (loading) {
     return <h2>Loading...</h2>;
@@ -25,9 +25,7 @@ function todos() {
     return null;
   }
 
-  return (
-    <div />
-  );
+  return <div />;
 }
 
 export default todos;

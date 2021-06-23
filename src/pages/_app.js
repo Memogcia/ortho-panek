@@ -1,19 +1,19 @@
-import 'styles/globals.css';
+import "styles/globals.css";
 
-import PropTypes from 'prop-types';
-import { UserProvider } from '@auth0/nextjs-auth0';
-import Layout from 'components/Layout';
-import { ThemeProvider, CssBaseline } from '@material-ui/core';
-import Head from 'next/head';
-import theme from 'defaultTheme';
-import { ApolloProvider } from '@apollo/client';
-import { useApollo } from 'lib/apollo-client';
-import ClientOnly from 'components/ClientOnly';
+import PropTypes from "prop-types";
+import { UserProvider } from "@auth0/nextjs-auth0";
+import Layout from "components/Layout";
+import { ThemeProvider, CssBaseline } from "@material-ui/core";
+import Head from "next/head";
+import theme from "defaultTheme";
+import { ApolloProvider } from "@apollo/client";
+import { useApollo } from "lib/apollo-client";
+import ClientOnly from "components/ClientOnly";
 
 function MyApp({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps.initialApolloState);
 
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />

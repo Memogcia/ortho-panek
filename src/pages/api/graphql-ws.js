@@ -6,7 +6,7 @@ import express from 'express';
 const app = express();
 
 app.use('*', async (req, _, next) => {
-    const { accessToken } = await getAccessToken(req, res);
+  const { accessToken } = await getAccessToken(req, res);
 
   const wsProxy = proxy({
     target: process.env.GRAPHQL_URL,
@@ -31,4 +31,4 @@ app.use('*', async (req, _, next) => {
   return wsProxy(req, _, next);
 });
 
-export default app;`
+export default app; `

@@ -1,17 +1,17 @@
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Chart from 'components/Chart';
-import Deposits from 'components/Deposits';
-import Orders from 'components/Orders';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Chart from "components/Chart";
+import Deposits from "components/Deposits";
+import Orders from "components/Orders";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
   },
   fixedHeight: {
     height: 240,

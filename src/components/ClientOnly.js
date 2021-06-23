@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 export default function ClientOnly({ children, ...delegated }) {
   const [hasMounted, setHasMounted] = useState(false);

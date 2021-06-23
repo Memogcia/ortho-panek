@@ -1,15 +1,16 @@
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
-import { useMemo } from 'react';
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { useMemo } from "react";
 
 let apolloClient;
 // https://www.apollographql.com/blog/apollo-client/next-js/building-a-next-js-app-with-slash-graphql/
-const createApolloClient = () => new ApolloClient({
-  ssrMode: typeof window === 'undefined',
-  link: new HttpLink({
-    uri: 'api/graphql',
-  }),
-  cache: new InMemoryCache(),
-});
+const createApolloClient = () =>
+  new ApolloClient({
+    ssrMode: typeof window === "undefined",
+    link: new HttpLink({
+      uri: "api/graphql",
+    }),
+    cache: new InMemoryCache(),
+  });
 
 export function initializeApollo(initialState = null) {
   // eslint-disable-next-line no-underscore-dangle
@@ -27,7 +28,7 @@ export function initializeApollo(initialState = null) {
   }
 
   // For SSG and SSR always create a new Apollo Client
-  if (typeof window === 'undefined') return _apolloClient;
+  if (typeof window === "undefined") return _apolloClient;
 
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;

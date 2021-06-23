@@ -5,7 +5,8 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "airbnb"
+        "airbnb",
+        "plugin:prettier/recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -18,15 +19,26 @@
         "react"
     ],
     "rules": {
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [
+                    ".js",
+                    ".jsx"
+                ]
+            }
+        ],
         "react/react-in-jsx-scope": "off",
         "react/jsx-props-no-spreading": "off"
     },
     "settings": {
         "import/resolver": {
             "node": {
-              "moduleDirectory": ["node_modules", "src/"]
+                "moduleDirectory": [
+                    "node_modules",
+                    "src/"
+                ]
             }
-          }
+        }
     }
 }

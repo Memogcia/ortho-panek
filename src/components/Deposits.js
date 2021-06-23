@@ -1,8 +1,8 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
-import Title from './Title';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import { Button } from "@material-ui/core";
+import Title from "./Title";
 
 function preventDefault(event) {
   event.preventDefault();
