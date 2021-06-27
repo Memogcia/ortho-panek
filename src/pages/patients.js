@@ -22,6 +22,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import { useState } from "react";
+import { getSession } from "next-auth/client";
 
 const QUERY = gql`
   query MyQuery {
@@ -228,7 +229,6 @@ EnhancedTableToolbar.propTypes = {
 function patients() {
   const classes = useStyles();
   const { data, loading, error } = useQuery(QUERY);
-  console.log("🚀 ~ file: patients.js ~ line 254 ~ patients ~ data", data);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
@@ -236,6 +236,7 @@ function patients() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   if (loading) return <h1>Cargando Pacientes</h1>;
+  if (error) return <h2>Error</h2>;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -371,3 +372,11 @@ function patients() {
 }
 
 export default patients;
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      session: await getSession(context),
+    },
+  };
+}
