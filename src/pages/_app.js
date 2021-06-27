@@ -64,7 +64,10 @@ function MyApp({ Component, pageProps }) {
 
 MyApp.propTypes = {
   Component: PropTypes.func,
-  pageProps: PropTypes.shape({ initialApolloState: {}, session: {} }),
+  pageProps: PropTypes.shape({
+    initialApolloState: PropTypes.shape({}),
+    session: PropTypes.shape({}),
+  }),
 };
 
 MyApp.defaultProps = {
