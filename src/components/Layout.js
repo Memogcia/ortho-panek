@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import PropTypes from "prop-types";
+import { signOut } from "next-auth/client";
 import { mainListItems, secondaryListItems } from "./listItems";
 
 function Copyright() {
@@ -147,9 +148,15 @@ export default function Layout({ children }) {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <a href="/api/auth/logout">
-            <Button color="inherit">CERRAR SESION</Button>
-          </a>
+          <Button
+            color="inherit"
+            onClick={(e) => {
+              e.preventDefault();
+              signOut();
+            }}
+          >
+            CERRAR SESION
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
