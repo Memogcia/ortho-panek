@@ -106,7 +106,9 @@ export default NextAuth({
   // https://next-auth.js.org/configuration/callbacks
   callbacks: {
     // async signIn(user, account, profile) { return true },
-    // async redirect(url, baseUrl) { return baseUrl },
+    async redirect(url, baseUrl) {
+      return baseUrl;
+    },
     async session(session, token) {
       const encondedToken = jwt.sign(token, process.env.SECRET, {
         algorithm: "HS256",
