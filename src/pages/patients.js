@@ -24,12 +24,10 @@ import clsx from "clsx";
 import { useState } from "react";
 import { getSession } from "next-auth/client";
 
-const QUERY = gql`
-  query MyQuery {
-    users {
-      id
+const GET_PATIENTS = gql`
+  query GET_PATIENTS {
+    users(where: { role: { _eq: "user" } }) {
       name
-      internal_id
     }
   }
 `;
@@ -228,7 +226,7 @@ EnhancedTableToolbar.propTypes = {
 
 function patients() {
   const classes = useStyles();
-  const { data, loading, error } = useQuery(QUERY);
+  const { data, loading, error } = useQuery(GET_PATIENTS);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
