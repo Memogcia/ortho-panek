@@ -7,7 +7,7 @@ const createApolloClient = (token) =>
   new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: process.env.HASURA_GRAPHQL_API,
+      uri: process.env.NEXT_PUBLIC_GRAPHQL_API,
       headers: {
         Authorization: `Bearer ${token}`,
       },
