@@ -3,18 +3,21 @@ import { useMemo } from "react";
 
 let apolloClient;
 // https://www.apollographql.com/blog/apollo-client/next-js/building-a-next-js-app-with-slash-graphql/
-const createApolloClient = () =>
+const createApolloClient = (token) =>
   new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: "api/graphql",
+      uri: process.env.HASURA_GRAPHQL_API,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }),
     cache: new InMemoryCache(),
   });
 
-export function initializeApollo(initialState = null) {
+export function initializeApollo(token, initialState = null) {
   // eslint-disable-next-line no-underscore-dangle
-  const _apolloClient = apolloClient ?? createApolloClient();
+  const _apolloClient = apolloClient ?? createApolloClient(token);
 
   // If your page has Next.js data fetching methods that use Apollo Client,
   // the initial state gets hydrated here
@@ -35,7 +38,10 @@ export function initializeApollo(initialState = null) {
   return _apolloClient;
 }
 
-export function useApollo(initialState) {
-  const store = useMemo(() => initializeApollo(initialState), [initialState]);
+export function useApollo(token, initialState) {
+  const store = useMemo(
+    () => initializeApollo(token, initialState),
+    [initialState]
+  );
   return store;
 }
