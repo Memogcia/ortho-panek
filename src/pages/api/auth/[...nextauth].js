@@ -113,7 +113,7 @@ export default NextAuth({
       const encondedToken = jwt.sign(token, process.env.SECRET, {
         algorithm: "HS256",
       });
-      session.id = token.id;
+      session.id = token.sub;
       session.role = token[process.env.HASURA_JWT_CLAIMS]["x-hasura-role"];
       session.token = encondedToken;
       return Promise.resolve(session);
