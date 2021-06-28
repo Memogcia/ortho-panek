@@ -9,18 +9,19 @@ import theme from "defaultTheme";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "lib/apollo-client";
 import ClientOnly from "components/ClientOnly";
+import { useEffect } from "react";
 
 function MyApp({ Component, pageProps }) {
   const token = pageProps?.session?.token;
   const apolloClient = useApollo(token, pageProps.initialApolloState);
 
-  if (typeof window === "undefined") {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-      </ThemeProvider>
-    );
-  }
+  useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side");
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
 
   return (
     <Provider
@@ -66,7 +67,9 @@ MyApp.propTypes = {
   Component: PropTypes.func,
   pageProps: PropTypes.shape({
     initialApolloState: PropTypes.shape({}),
-    session: PropTypes.shape({}),
+    session: PropTypes.shape({
+      token: PropTypes.string,
+    }),
   }),
 };
 
