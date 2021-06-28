@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update:packages": "yarn upgrade-interactive --latest"
   },
   "dependencies": {
     "@apollo/client": "^3.3.20",
