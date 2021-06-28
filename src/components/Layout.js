@@ -141,7 +141,7 @@ export default function Layout({ children }) {
             noWrap
             className={classes.title}
           >
-            Layout
+            Dr. Eliezer García
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
