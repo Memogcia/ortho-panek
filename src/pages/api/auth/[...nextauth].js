@@ -122,6 +122,28 @@ export default NextAuth({
       const isUserSignedIn = !!user;
       if (isUserSignedIn) {
         token.id = user.id;
+        const query = `mutation($userId: String!, $nickname: String, $email: String) {
+            insert_users(objects: [{
+              id: $userId, name: $nickname, email: $email
+            }], on_conflict: {constraint: users_pkey, update_columns: [last_seen, name, email]}
+            ) {
+              affected_rows
+            }
+          }
+        `;
+        const variables = {
+          userId: user.id,
+          nickname: user.nickname,
+          email: user.email,
+        };
+        await fetch(process.env.HASURA_GRAPHQL_API, {
+          method: "POST",
+          headers: { "x-hasura-admin-secret": process.env.HASURA_SECRET },
+          body: JSON.stringify({
+            query,
+            variables,
+          }),
+        });
       }
       return Promise.resolve(token);
     },
