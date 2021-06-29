@@ -74,6 +74,7 @@ function patients() {
   const options = {
     download: false,
     sort: false,
+    filter: false,
     selectableRows: "none",
     print: false,
     serverSide: true,
