@@ -1,4 +1,4 @@
-import { gql, useQuery, useMutation, useLazyQuery } from "@apollo/client";
+import { gql, useMutation, useLazyQuery } from "@apollo/client";
 /* eslint-disable react/forbid-prop-types */
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -6,11 +6,14 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { getSession } from "next-auth/client";
 import MUIDataTable from "mui-datatables";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import TextField from "@material-ui/core/TextField";
 import Statuses from "components/StatusesSelect";
 import { useEffect, useState } from "react";
 import useDebounce from "hooks/useDebounce";
+import CreateIcon from "@material-ui/icons/Create";
+import { IconButton } from "@material-ui/core";
+import Link from "next/link";
+import { COMMON_ROUTES } from "constants/routes";
+import { format } from "date-fns";
 
 const GET_PATIENTS = gql`
   query GET_PATIENTS($page: Int, $limit: Int, $name: String) {
@@ -70,6 +73,7 @@ function patients() {
 
   const options = {
     download: false,
+    sort: false,
     selectableRows: "none",
     print: false,
     serverSide: true,
@@ -100,18 +104,18 @@ function patients() {
     {
       label: "Nombre",
       name: "name",
-      options: {
-        customBodyRender: (value, tableMeta, updateValue) => (
-          <FormControlLabel
-            value={value}
-            control={<TextField value={value} />}
-            onChange={(event) => updateValue(event.target.value)}
-          />
-        ),
-      },
     },
     { label: "Email", name: "email" },
-    { label: "Fecha de inicio", name: "starting_date" },
+    {
+      label: "Fecha de inicio",
+      name: "starting_date",
+      options: {
+        customBodyRender: (value) => {
+          if (value) return format(new Date(value), "dd/MM/yyyy");
+          return "";
+        },
+      },
+    },
     {
       label: "Estatus",
       name: "status",
@@ -136,6 +140,25 @@ function patients() {
     { label: "Faltista", name: "not_attend" },
     { label: "Teléfono fijo", name: "phone" },
     { label: "Celular", name: "cellphone" },
+    {
+      name: "Opciones",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRender: (_, tableMeta) => {
+          return (
+            <Link
+              href={`${COMMON_ROUTES.update_patient}?id=${tableMeta.rowData[0]}`}
+            >
+              <IconButton size="small">
+                <CreateIcon fontSize="small" />
+              </IconButton>
+            </Link>
+          );
+        },
+      },
+    },
   ];
 
   return (
