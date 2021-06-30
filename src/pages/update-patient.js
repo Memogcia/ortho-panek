@@ -11,6 +11,7 @@ import { useRouter } from "next/dist/client/router";
 const GET_PATIENT = gql`
   query GetPatient($id: String = "") {
     users(where: { id: { _eq: $id } }) {
+      id
       cellphone
       consulting_room
       referrer
@@ -21,6 +22,7 @@ const GET_PATIENT = gql`
       starting_date
       status
       address {
+        id
         address
         city
         colony
@@ -84,17 +86,18 @@ const INSERT_PATIENT_ADDRESS = gql`
       }
     ) {
       returning {
+        id
         address
         city
         colony
         postal_code
         state
         user_id
-        id
       }
     }
   }
 `;
+
 const UPDATE_PATIENT_ADDRESS = gql`
   mutation UpdatePatientAddress(
     $address: String = ""
@@ -145,7 +148,35 @@ function patients() {
     },
   });
   const [updatePatientData] = useMutation(UPDATE_PATIENT_DATA);
-  const [insertPatientAddress] = useMutation(INSERT_PATIENT_ADDRESS);
+  const [insertPatientAddress] = useMutation(INSERT_PATIENT_ADDRESS, {
+    update(cache, { data: insert_addresses }) {
+      console.log(
+        "🚀 ~ file: update-patient.js ~ line 153 ~ update ~ insert_addresses",
+        insert_addresses
+      );
+      cache.modify({
+        fields: {
+          Addresses(existingPatientAddress = []) {
+            const newPatientAddressRed = cache.writeFragment({
+              data: insert_addresses,
+              fragment: gql`
+                fragment NewPatientAddress on PatientAddress {
+                  id
+                  colony
+                  city
+                  address
+                  postal_code
+                  state
+                  user_id
+                }
+              `,
+            });
+            return [...existingPatientAddress, newPatientAddressRed];
+          },
+        },
+      });
+    },
+  });
   const [updatePatientAddress] = useMutation(UPDATE_PATIENT_ADDRESS);
 
   if (loading) return <h1>Cargando paciente...</h1>;
