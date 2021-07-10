@@ -21,7 +21,7 @@
     "nookies": "2.3.1",
     "prop-types": "15.7.2",
     "react": "16.13.1",
-    "react-bootstrap": "1.0.1",
+    "react-bootstrap": "1.6.1",
     "react-dom": "16.13.1",
     "subscriptions-transport-ws": "^0.9.18"
   },
