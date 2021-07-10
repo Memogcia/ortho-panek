@@ -13,7 +13,7 @@
     "apollo-boost": "^0.4.9",
     "apollo-link-ws": "^1.0.20",
     "bootstrap": "3.4.1",
-    "dotenv": "8.2.0",
+    "dotenv": "8.6.0",
     "graphql": "^15.5.0",
     "graphql-tag": "2.10.3",
     "isomorphic-unfetch": "3.0.0",
