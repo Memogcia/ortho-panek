@@ -155,9 +155,10 @@ function patients() {
         insert_addresses
       );
       cache.modify({
+        id: cache.identify(data.users[0]),
         fields: {
           Addresses(existingPatientAddress = []) {
-            const newPatientAddressRed = cache.writeFragment({
+            const newPatientAddressRef = cache.writeFragment({
               data: insert_addresses,
               fragment: gql`
                 fragment NewPatientAddress on PatientAddress {
@@ -167,11 +168,10 @@ function patients() {
                   address
                   postal_code
                   state
-                  user_id
                 }
               `,
             });
-            return [...existingPatientAddress, newPatientAddressRed];
+            return [...existingPatientAddress, newPatientAddressRef];
           },
         },
       });
