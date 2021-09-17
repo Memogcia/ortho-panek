@@ -149,6 +149,7 @@ function patients() {
   });
   const [updatePatientData] = useMutation(UPDATE_PATIENT_DATA);
   const [insertPatientAddress] = useMutation(INSERT_PATIENT_ADDRESS, {
+    // eslint-disable-next-line camelcase
     update(cache, { data: insert_addresses }) {
       console.log(
         "🚀 ~ file: update-patient.js ~ line 153 ~ update ~ insert_addresses",
