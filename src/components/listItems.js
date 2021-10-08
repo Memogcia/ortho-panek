@@ -11,6 +11,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import PeopleIcon from "@material-ui/icons/People";
 import React from "react";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 
 export const mainListItems = (
   <div>
@@ -34,6 +35,15 @@ export const mainListItems = (
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Pacientes" />
+      </ListItem>
+    </Link>
+
+    <Link href={COMMON_ROUTES.create_patient}>
+      <ListItem button>
+        <ListItemIcon>
+          <PersonAddIcon />
+        </ListItemIcon>
+        <ListItemText primary="Crear paciente" />
       </ListItem>
     </Link>
 
