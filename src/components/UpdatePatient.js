@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { v1 as uuidv1 } from "uuid";
 import { DateTimePicker, Select, TextField } from "./HFMUI";
 
 const useStyles = makeStyles((theme) => ({
@@ -70,11 +71,11 @@ export default function UpdatePatient({
     cellphone: Yup.string(),
     phone: Yup.string(),
     address: Yup.object().shape({
-      address: Yup.string(),
-      colony: Yup.string(),
-      city: Yup.string(),
-      state: Yup.string(),
-      postal_code: Yup.string(),
+      address: Yup.string().required("La dirección es requerida"),
+      colony: Yup.string("La colonia es requerida"),
+      city: Yup.string("La ciudad es requerida"),
+      state: Yup.string("El estado es requerido"),
+      postal_code: Yup.string("El Código postal es requerido"),
     }),
   });
   const formOptions = {
@@ -106,7 +107,10 @@ export default function UpdatePatient({
     );
     if (patientId)
       await updatePatientData({ variables: { id: patientId, ...rest } });
-    else patientInserted = await insertPatient({ variables: { ...rest } });
+    else
+      patientInserted = await insertPatient({
+        variables: { id: uuidv1(), ...rest },
+      });
     console.log(
       "🚀 ~ file: UpdatePatient.js ~ line 105 ~ onSubmit ~ patientInserted",
       patientInserted
@@ -131,6 +135,18 @@ export default function UpdatePatient({
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
+          {!patientId && (
+            <Grid item xs={12} sm={12}>
+              <TextField
+                control={control}
+                required
+                id="email"
+                name="email"
+                label="Correo electrónico (email)"
+                fullWidth
+              />
+            </Grid>
+          )}
           <Grid item xs={12} sm={6}>
             <TextField
               control={control}
