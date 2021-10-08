@@ -17,7 +17,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.3.10",
     "clsx": "^1.1.1",
-    "date-fns": "^2.23.0",
+    "date-fns": "^2.24.0",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.3",
     "jsonwebtoken": "^8.5.1",
