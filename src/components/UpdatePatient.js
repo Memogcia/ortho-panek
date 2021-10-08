@@ -1,14 +1,16 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Button } from "@material-ui/core";
+
+import { Box, Button } from "@material-ui/core";
+
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
+import React from "react";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { DateTimePicker, Select, TextField } from "./HFMUI";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,8 +45,13 @@ export default function UpdatePatient({
   patientData,
   updatePatientData,
   insertPatientAddress,
+  insertPatient,
   updatePatientAddress,
 }) {
+  console.log(
+    "🚀 ~ file: UpdatePatient.js ~ line 51 ~ insertPatient",
+    insertPatient
+  );
   console.log(
     "🚀 ~ file: UpdatePatient.js ~ line 41 ~ UpdatePatient ~ patientData",
     patientData
@@ -92,20 +99,32 @@ export default function UpdatePatient({
   const { errors } = formState;
 
   const onSubmit = async ({ address, ...rest }) => {
-    await updatePatientData({ variables: { id: patientId, ...rest } });
-    const addressPyload = {
-      variables: { user_id: patientId, ...address },
-    };
-    if (patientData.address) await updatePatientAddress(addressPyload);
-    else await insertPatientAddress(addressPyload);
+    let patientInserted;
+    console.log(
+      "🚀 ~ file: UpdatePatient.js ~ line 104 ~ onSubmit ~ patientId",
+      patientId
+    );
+    if (patientId)
+      await updatePatientData({ variables: { id: patientId, ...rest } });
+    else patientInserted = await insertPatient({ variables: { ...rest } });
+    console.log(
+      "🚀 ~ file: UpdatePatient.js ~ line 105 ~ onSubmit ~ patientInserted",
+      patientInserted
+    );
 
-    router.push("/patients");
+    // const addressPyload = {
+    //   variables: { user_id: patientId, ...address },
+    // };
+    // if (patientData.address) await updatePatientAddress(addressPyload);
+    // else await insertPatientAddress(addressPyload);
+
+    // router.push("/patients");
   };
 
   return (
     <Paper className={classes.paper}>
       <Typography component="h1" variant="h4" align="center">
-        Actualizar paciente
+        {patientId ? "Actualizar paciente" : "Registrar paciente"}
       </Typography>
       <Typography variant="h6" gutterBottom>
         Información personal
@@ -177,6 +196,7 @@ export default function UpdatePatient({
             />
           </Grid>
         </Grid>
+        <Box mt={2} />
         <Typography variant="h6" gutterBottom>
           Dirección
         </Typography>
@@ -240,7 +260,7 @@ export default function UpdatePatient({
             type="submit"
             className={classes.button}
           >
-            Actualizar paciente
+            {patientId ? "Actualizar paciente" : "Registrar paciente"}
           </Button>
         </div>
       </form>
@@ -266,6 +286,7 @@ UpdatePatient.propTypes = {
   }),
   updatePatientData: PropTypes.func,
   insertPatientAddress: PropTypes.func,
+  insertPatient: PropTypes.func,
   updatePatientAddress: PropTypes.func,
   patientId: PropTypes.string,
 };
@@ -274,6 +295,7 @@ UpdatePatient.defaultProps = {
   patientData: {},
   updatePatientData: () => {},
   insertPatientAddress: () => {},
+  insertPatient: () => {},
   updatePatientAddress: () => {},
   patientId: "",
 };
