@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const INSERT_PATIENT_QUERY = gql`
   mutation InsertUserMutation(
+    $id: String = ""
     $consulting_room: String = ""
     $cellphone: String = ""
     $email: String = ""
@@ -19,6 +20,7 @@ const INSERT_PATIENT_QUERY = gql`
   ) {
     insert_users(
       objects: {
+        id: $id
         consulting_room: $consulting_room
         cellphone: $cellphone
         email: $email
