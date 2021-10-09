@@ -102,4 +102,16 @@ Modal.propTypes = {
   form: PropTypes.string,
 };
 
+Modal.defaultProps = {
+  title: null,
+  text: null,
+  actionButtonText: null,
+  open: false,
+  type: null,
+  onClick: () => {},
+  onClose: () => {},
+  children: null,
+  form: null,
+};
+
 export default Modal;
