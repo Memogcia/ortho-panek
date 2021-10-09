@@ -89,69 +89,8 @@ const useStyles = makeStyles((theme) => ({
 function patients() {
   const classes = useStyles();
 
-  const [insertPatientAddress] = useMutation(
-    INSERT_PATIENT_ADDRESS
-    //   {
-    //   // eslint-disable-next-line camelcase
-    //   update(cache, { data: insert_addresses }) {
-    //     console.log(
-    //       "🚀 ~ file: update-patient.js ~ line 153 ~ update ~ insert_addresses",
-    //       insert_addresses
-    //     );
-    //     cache.modify({
-    //       fields: {
-    //         Addresses(existingPatientAddress = []) {
-    //           const newPatientAddressRef = cache.writeFragment({
-    //             data: insert_addresses,
-    //             fragment: gql`
-    //               fragment NewPatientAddress on PatientAddress {
-    //                 id
-    //                 colony
-    //                 city
-    //                 address
-    //                 postal_code
-    //                 state
-    //               }
-    //             `,
-    //           });
-    //           return [...existingPatientAddress, newPatientAddressRef];
-    //         },
-    //       },
-    //     });
-    //   },
-    // }
-  );
-  const [insertPatient] = useMutation(
-    INSERT_PATIENT_QUERY
-    //   {
-    //   // eslint-disable-next-line camelcase
-    //   update(cache, { data: insert_users }) {
-    //     cache.modify({
-    //       fields: {
-    //         Users(existingPatient = []) {
-    //           const newPatientRef = cache.writeFragment({
-    //             data: insert_users,
-    //             fragment: gql`
-    //               fragment NewPatientAddress on PatientAddress {
-    //                 id
-    //                 consulting_room
-    //                 cellphone
-    //                 email
-    //                 name
-    //                 phone
-    //                 referrer
-    //                 role
-    //                 starting_date
-    //               }
-    //             `,
-    //           });
-    //           return [...existingPatient, newPatientRef];
-    //         },
-    //       },
-    //     });
-    //   },
-    // }
-  );
+  const [insertPatientAddress] = useMutation(INSERT_PATIENT_ADDRESS);
+  const [insertPatient] = useMutation(INSERT_PATIENT_QUERY);
 
   return (
     <Grid container spacing={3}>
