@@ -49,14 +49,6 @@ export default function UpdatePatient({
   insertPatient,
   updatePatientAddress,
 }) {
-  console.log(
-    "🚀 ~ file: UpdatePatient.js ~ line 51 ~ insertPatient",
-    insertPatient
-  );
-  console.log(
-    "🚀 ~ file: UpdatePatient.js ~ line 41 ~ UpdatePatient ~ patientData",
-    patientData
-  );
   const classes = useStyles();
   const router = useRouter();
 
@@ -64,6 +56,7 @@ export default function UpdatePatient({
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("El nombre completo es requerido"),
     starting_date: Yup.date(),
+    birth_date: Yup.date(),
     referrer: Yup.string(),
     consulting_room: Yup.string().required(
       "El consultorio en el que se atendie es requerido"
@@ -71,7 +64,7 @@ export default function UpdatePatient({
     cellphone: Yup.string(),
     phone: Yup.string(),
     address: Yup.object().shape({
-      address: Yup.string().required("La dirección es requerida"),
+      address: Yup.string("La dirección es requerida"),
       colony: Yup.string("La colonia es requerida"),
       city: Yup.string("La ciudad es requerida"),
       state: Yup.string("El estado es requerido"),
@@ -97,32 +90,26 @@ export default function UpdatePatient({
     },
   };
   const { control, handleSubmit, formState } = useForm(formOptions);
-  const { errors } = formState;
 
   const onSubmit = async ({ address, ...rest }) => {
     let patientInserted;
-    console.log(
-      "🚀 ~ file: UpdatePatient.js ~ line 104 ~ onSubmit ~ patientId",
-      patientId
-    );
     if (patientId)
       await updatePatientData({ variables: { id: patientId, ...rest } });
     else
       patientInserted = await insertPatient({
         variables: { id: uuidv1(), ...rest },
       });
-    console.log(
-      "🚀 ~ file: UpdatePatient.js ~ line 105 ~ onSubmit ~ patientInserted",
-      patientInserted
-    );
 
-    // const addressPyload = {
-    //   variables: { user_id: patientId, ...address },
-    // };
-    // if (patientData.address) await updatePatientAddress(addressPyload);
-    // else await insertPatientAddress(addressPyload);
+    const patiendIdTemp =
+      patientInserted?.data?.insert_users?.returning[0]?.id || patientId;
 
-    // router.push("/patients");
+    const addressPyload = {
+      variables: { user_id: patiendIdTemp, ...address },
+    };
+    if (patientData.address) await updatePatientAddress(addressPyload);
+    else await insertPatientAddress(addressPyload);
+
+    router.push("/patients");
   };
 
   return (
@@ -144,6 +131,7 @@ export default function UpdatePatient({
                 name="email"
                 label="Correo electrónico (email)"
                 fullWidth
+                error={!!formState.errors?.email}
               />
             </Grid>
           )}
@@ -156,6 +144,7 @@ export default function UpdatePatient({
               label="Nombre completo"
               fullWidth
               autoComplete="given-name"
+              error={!!formState.errors?.name}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -165,6 +154,7 @@ export default function UpdatePatient({
               name="referrer"
               label="Referido por"
               fullWidth
+              error={!!formState.errors?.referrer}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -179,6 +169,7 @@ export default function UpdatePatient({
                 { label: "Guadalajara", value: "guadalajara" },
               ]}
               fullWidth
+              error={!!formState.errors?.consulting_room}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -189,6 +180,7 @@ export default function UpdatePatient({
               name="starting_date"
               label="Fecha de inicio"
               fullWidth
+              error={!!formState.errors?.starting_date}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -199,6 +191,7 @@ export default function UpdatePatient({
               name="phone"
               label="Teléfono local"
               fullWidth
+              error={!!formState.errors?.phone}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -209,6 +202,7 @@ export default function UpdatePatient({
               name="cellphone"
               label="Teléfono celular"
               fullWidth
+              error={!!formState.errors?.cellphone}
             />
           </Grid>
         </Grid>
@@ -225,6 +219,7 @@ export default function UpdatePatient({
               name="address.address"
               label="Dirección (calle y número)"
               fullWidth
+              error={!!formState.errors?.address?.address}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -246,6 +241,7 @@ export default function UpdatePatient({
               label="Código postal"
               fullWidth
               autoComplete="shipping postal-code"
+              error={!!formState.errors?.address?.postal_code}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -256,6 +252,7 @@ export default function UpdatePatient({
               name="address.city"
               label="Ciudad"
               fullWidth
+              error={!!formState.errors?.address?.city}
             />
           </Grid>
 
@@ -266,6 +263,7 @@ export default function UpdatePatient({
               name="address.state"
               label="Estado"
               fullWidth
+              error={!!formState.errors?.address?.state}
             />
           </Grid>
         </Grid>
@@ -309,9 +307,9 @@ UpdatePatient.propTypes = {
 
 UpdatePatient.defaultProps = {
   patientData: {},
-  updatePatientData: () => {},
-  insertPatientAddress: () => {},
-  insertPatient: () => {},
-  updatePatientAddress: () => {},
+  updatePatientData: null,
+  insertPatientAddress: null,
+  insertPatient: null,
+  updatePatientAddress: null,
   patientId: "",
 };
