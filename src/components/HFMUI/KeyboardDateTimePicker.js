@@ -24,7 +24,6 @@ const DateTimePicker = ({ control, name, ...rest }) => {
             variant="inline"
             // inputVariant="outlined"
             format="dd/MM/yyyy"
-            ampm
             invalidDateMessage="Fecha inválida"
             invalidLabel="Fecha inválida"
             {...field}

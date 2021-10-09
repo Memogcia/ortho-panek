@@ -20,6 +20,7 @@ const GET_PATIENT = gql`
       not_attend
       phone
       starting_date
+      birth_date
       status
       address {
         id
@@ -42,6 +43,7 @@ const UPDATE_PATIENT_DATA = gql`
     $phone: String = ""
     $referrer: String = ""
     $starting_date: timestamptz = ""
+    $birth_date: timestamptz = ""
   ) {
     update_users(
       where: { id: { _eq: $id } }
@@ -52,6 +54,7 @@ const UPDATE_PATIENT_DATA = gql`
         phone: $phone
         referrer: $referrer
         starting_date: $starting_date
+        birth_date: $birth_date
       }
     ) {
       returning {
@@ -62,10 +65,12 @@ const UPDATE_PATIENT_DATA = gql`
         phone
         referrer
         starting_date
+        birth_date
       }
     }
   }
 `;
+
 const INSERT_PATIENT_ADDRESS = gql`
   mutation InsertPatientAddress(
     $address: String = ""

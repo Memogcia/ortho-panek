@@ -76,6 +76,7 @@ export default function UpdatePatient({
     defaultValues: {
       name: patientData.name || "",
       starting_date: patientData.starting_date || new Date(),
+      birth_date: patientData.birth_date || null,
       referrer: patientData.referrer || "",
       consulting_room: patientData.consulting_room || "",
       cellphone: patientData.cellphone || "",
@@ -122,8 +123,20 @@ export default function UpdatePatient({
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              control={control}
+              required
+              id="name"
+              name="name"
+              label="Nombre completo"
+              fullWidth
+              autoComplete="given-name"
+              error={!!formState.errors?.name}
+            />
+          </Grid>
           {!patientId && (
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 control={control}
                 required
@@ -138,23 +151,33 @@ export default function UpdatePatient({
           <Grid item xs={12} sm={6}>
             <TextField
               control={control}
-              required
-              id="name"
-              name="name"
-              label="Nombre completo"
-              fullWidth
-              autoComplete="given-name"
-              error={!!formState.errors?.name}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              control={control}
               id="referrer"
               name="referrer"
               label="Referido por"
               fullWidth
               error={!!formState.errors?.referrer}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <DateTimePicker
+              control={control}
+              required
+              id="birth_date"
+              name="birth_date"
+              label="Fecha de nacimiento"
+              fullWidth
+              error={!!formState.errors?.birth_date}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <DateTimePicker
+              control={control}
+              required
+              id="starting_date"
+              name="starting_date"
+              label="Fecha de inicio"
+              fullWidth
+              error={!!formState.errors?.starting_date}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -172,17 +195,7 @@ export default function UpdatePatient({
               error={!!formState.errors?.consulting_room}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <DateTimePicker
-              control={control}
-              required
-              id="starting_date"
-              name="starting_date"
-              label="Fecha de inicio"
-              fullWidth
-              error={!!formState.errors?.starting_date}
-            />
-          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               control={control}
@@ -285,6 +298,7 @@ export default function UpdatePatient({
 UpdatePatient.propTypes = {
   patientData: PropTypes.shape({
     name: PropTypes.string,
+    birth_date: PropTypes.string,
     starting_date: PropTypes.string,
     referrer: PropTypes.string,
     consulting_room: PropTypes.string,

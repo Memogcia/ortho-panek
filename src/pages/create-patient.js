@@ -17,6 +17,7 @@ const INSERT_PATIENT_QUERY = gql`
     $referrer: String = ""
     $phone: String = ""
     $starting_date: timestamptz = ""
+    $birth_date: timestamptz = ""
   ) {
     insert_users(
       objects: {
@@ -28,6 +29,7 @@ const INSERT_PATIENT_QUERY = gql`
         phone: $phone
         referrer: $referrer
         starting_date: $starting_date
+        birth_date: $birth_date
       }
     ) {
       returning {
@@ -39,6 +41,7 @@ const INSERT_PATIENT_QUERY = gql`
         phone
         referrer
         starting_date
+        birth_date
       }
     }
   }
