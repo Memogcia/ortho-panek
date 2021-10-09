@@ -28,8 +28,8 @@ const Modal = (props) => {
   const {
     onClose,
     type,
-    dialogTitle,
-    dialogText,
+    title,
+    text,
     children,
     actionButtonText,
     onClick,
@@ -66,12 +66,12 @@ const Modal = (props) => {
         {...rest}
       >
         <DialogTitle id="alert-dialog-title" onClose={onClose}>
-          {dialogTitle}
+          {title}
         </DialogTitle>
         <DialogContent>
           {handleRenderIcon()}
           <DialogContentText id="alert-dialog-description">
-            {dialogText}
+            {text}
           </DialogContentText>
           {children}
         </DialogContent>
@@ -91,8 +91,8 @@ const Modal = (props) => {
 };
 
 Modal.propTypes = {
-  dialogTitle: PropTypes.string,
-  dialogText: PropTypes.string,
+  title: PropTypes.string,
+  text: PropTypes.string,
   actionButtonText: PropTypes.string,
   open: PropTypes.bool,
   type: PropTypes.string,
