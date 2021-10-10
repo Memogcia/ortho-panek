@@ -61,6 +61,8 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
   //   }
   // };
 
+  // const customDayPropGetter = useCallback(date => (date.getDay() === 0 ? { className: styles.weekOff } : {}), []);
+
   return (
     <>
       <Modal

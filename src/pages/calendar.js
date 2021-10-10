@@ -2,7 +2,6 @@ import { gql, useMutation, useSubscription } from "@apollo/client";
 /* eslint-disable react/forbid-prop-types */
 import { makeStyles } from "@material-ui/core/styles";
 
-import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { getSession } from "next-auth/client";
 import CalendarComponent from "components/Calendar";
@@ -70,9 +69,11 @@ const INSERT_APPOINTMENT = gql`
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    height: "100%",
   },
   paper: {
     width: "100%",
+    height: "100%",
     marginBottom: theme.spacing(2),
   },
 }));
@@ -83,16 +84,12 @@ function patients() {
   const [insertAppointment] = useMutation(INSERT_APPOINTMENT);
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Paper className={classes.paper}>
-          <CalendarComponent
-            insertAppointment={insertAppointment}
-            appointments={data?.appointments || []}
-          />
-        </Paper>
-      </Grid>
-    </Grid>
+    <Paper className={classes.paper}>
+      <CalendarComponent
+        insertAppointment={insertAppointment}
+        appointments={data?.appointments || []}
+      />
+    </Paper>
   );
 }
 
