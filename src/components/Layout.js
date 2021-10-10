@@ -99,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
   },
   container: {
+    height: "100%",
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
