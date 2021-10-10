@@ -23,11 +23,12 @@ function AutoCompletePatients({ error, ...rest }) {
   const debounceSearchPatient = useDebounce(patientToSearch, 500);
 
   useEffect(() => {
-    getPatients({
-      variables: {
-        name: patientToSearch ? `%${patientToSearch}%` : "%%",
-      },
-    });
+    if (patientToSearch)
+      getPatients({
+        variables: {
+          name: patientToSearch ? `%${patientToSearch}%` : "%%",
+        },
+      });
   }, [debounceSearchPatient]);
 
   useEffect(() => {
