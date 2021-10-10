@@ -1,17 +1,20 @@
-import { useState } from "react";
-import { momentLocalizer, Calendar, Views } from "react-big-calendar";
+import "moment/locale/es";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
+import { Calendar, Views, momentLocalizer } from "react-big-calendar";
+
+import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
+import { DateTimePicker } from "components/HFMUI";
 import { Grid } from "@material-ui/core";
 import Modal from "components/Modal";
+import PropTypes from "prop-types";
+import appointmentsPropTypes from "proptypes/appointments";
 import moment from "moment";
-import "moment/locale/es";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import schema from "components/Calendar/schema";
-import { DateTimePicker } from "components/HFMUI";
-import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { v1 as uuidv1 } from "uuid";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 moment.locale("es");
 const localizer = momentLocalizer(moment);
@@ -142,6 +145,16 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
       />
     </>
   );
+};
+
+CalendarComponent.propTypes = {
+  insertAppointment: PropTypes.func,
+  appointments: appointmentsPropTypes,
+};
+
+CalendarComponent.defaultProps = {
+  insertAppointment: null,
+  appointments: [],
 };
 
 export default CalendarComponent;
