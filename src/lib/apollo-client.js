@@ -15,7 +15,7 @@ const httpLink = (token) =>
 const wsLink = (token) =>
   process.browser
     ? new WebSocketLink({
-        uri: "wss://ortho.hasura.app/v1/graphql",
+        uri: process.env.NEXT_PUBLIC_WS_GRAPHQL_API,
         options: {
           reconnect: true,
           timeout: 30000,
