@@ -44,7 +44,7 @@ const link = (token) =>
     : httpLink(token);
 
 let apolloClient;
-// https://www.apollographql.com/blog/apollo-client/next-js/building-a-next-js-app-with-slash-graphql/
+
 const createApolloClient = (token) =>
   new ApolloClient({
     ssrMode: typeof window === "undefined",
