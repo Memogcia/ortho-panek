@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
+import { gql, useMutation, useSubscription } from "@apollo/client";
 /* eslint-disable react/forbid-prop-types */
 import { makeStyles } from "@material-ui/core/styles";
 
