@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 /* eslint-disable react/forbid-prop-types */
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -8,20 +8,20 @@ import { getSession } from "next-auth/client";
 import CalendarComponent from "components/Calendar";
 
 const GET_APPOINTMENTS = gql`
-  query GetAppointmentsQuery {
+  subscription GetAppointmentsSubscription {
     appointments {
-      id
-      end_date_time
       comments
+      end_date_time
+      id
       patient_assisted
       start_date_time
       status
       type
       user {
         name
-        email
         phone
         cellphone
+        email
       }
     }
   }
@@ -79,10 +79,8 @@ const useStyles = makeStyles((theme) => ({
 
 function patients() {
   const classes = useStyles();
-  const { data, loading, error } = useQuery(GET_APPOINTMENTS);
+  const { data } = useSubscription(GET_APPOINTMENTS);
   const [insertAppointment] = useMutation(INSERT_APPOINTMENT);
-
-  console.log("🚀 ~ file: calendar.js ~ line 62 ~ patients ~ data", data);
 
   return (
     <Grid container spacing={3}>
