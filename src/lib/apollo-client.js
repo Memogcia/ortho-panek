@@ -1,17 +1,54 @@
-import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache, HttpLink, split } from "@apollo/client";
+
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
 import { useMemo } from "react";
+
+const httpLink = (token) =>
+  new HttpLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_API,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+const wsLink = (token) =>
+  process.browser
+    ? new WebSocketLink({
+        uri: "wss://ortho.hasura.app/v1/graphql",
+        options: {
+          reconnect: true,
+          timeout: 30000,
+          connectionParams: {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        },
+      })
+    : null;
+
+const link = (token) =>
+  wsLink(token)
+    ? split(
+        ({ query }) => {
+          const def = getMainDefinition(query);
+          return (
+            def.kind === "OperationDefinition" &&
+            def.operation === "subscription"
+          );
+        },
+        wsLink(token),
+        httpLink(token)
+      )
+    : httpLink(token);
 
 let apolloClient;
 // https://www.apollographql.com/blog/apollo-client/next-js/building-a-next-js-app-with-slash-graphql/
 const createApolloClient = (token) =>
   new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: process.env.NEXT_PUBLIC_GRAPHQL_API,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }),
+    link: link(token),
     cache: new InMemoryCache(),
   });
 
