@@ -1,4 +1,4 @@
-import { gql, useMutation, useLazyQuery, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 /* eslint-disable react/forbid-prop-types */
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -8,13 +8,13 @@ import { getSession } from "next-auth/client";
 import CalendarComponent from "components/Calendar";
 
 const GET_APPOINTMENTS = gql`
-  query GetAppointments {
+  query GetAppointmentsQuery {
     appointments {
-      comments
-      end_date_time: end
       id
+      end_date_time
+      comments
       patient_assisted
-      start_date_time: start
+      start_date_time
       status
       type
       user {
@@ -28,7 +28,7 @@ const GET_APPOINTMENTS = gql`
 `;
 
 const INSERT_APPOINTMENT = gql`
-  mutation MyMutation(
+  mutation InsertAppointmentMutation(
     $id: uuid = ""
     $start_date_time: timestamptz = ""
     $end_date_time: timestamptz = ""
@@ -56,12 +56,11 @@ const INSERT_APPOINTMENT = gql`
         start_date_time
         status
         type
-        user_id
         user {
-          phone
           name
-          cellphone
           email
+          phone
+          cellphone
         }
       }
     }
@@ -81,24 +80,18 @@ const useStyles = makeStyles((theme) => ({
 function patients() {
   const classes = useStyles();
   const { data, loading, error } = useQuery(GET_APPOINTMENTS);
+  const [insertAppointment] = useMutation(INSERT_APPOINTMENT);
 
   console.log("🚀 ~ file: calendar.js ~ line 62 ~ patients ~ data", data);
-
-  // useEffect(() => {
-  //   getPatients({
-  //     variables: {
-  //       name: nameToSearch ? `%${nameToSearch}%` : "%%",
-  //       page,
-  //       limit,
-  //     },
-  //   });
-  // }, [debounceSearchTerm]);
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Paper className={classes.paper}>
-          <CalendarComponent />
+          <CalendarComponent
+            insertAppointment={insertAppointment}
+            appointments={data?.appointments || []}
+          />
         </Paper>
       </Grid>
     </Grid>
