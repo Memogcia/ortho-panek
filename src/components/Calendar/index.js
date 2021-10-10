@@ -39,11 +39,27 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
   };
 
   const handleCreateAppointment = async (formData) => {
-    const appointment = await insertAppointment({
+    await insertAppointment({
       variables: { id: uuidv1(), ...formData },
     });
     closeModal();
   };
+
+  // const customEventPropGetter = (selectedEventData) => {
+  //   const { resource } = selectedEventData;
+  //   const { id: resourceId } = resource;
+
+  //   switch (resourceId) {
+  //     case resourceIds.LIDO_HOLIDAYS:
+  //       return { className: styles.holidayEvent };
+  //     case resourceIds.BATCHES:
+  //       return { className: styles.batchesEvent };
+  //     case resourceIds.SUBSTITUTE_CLASSES:
+  //       return { className: styles.substituteClasses };
+  //     default:
+  //       return {};
+  //   }
+  // };
 
   return (
     <>
@@ -105,12 +121,14 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
         localizer={localizer}
         selectable
         events={appointments}
-        defaultView={Views.WEEK}
+        defaultView={Views.MONTH}
         defaultDate={new Date()}
         step={15}
         startAccessor={(event) => new Date(event.start_date_time)}
         endAccessor={(event) => new Date(event.end_date_time)}
         titleAccessor={(event) => event.user.name}
+        min={moment("08:00:00", "HH:mm:ss").toDate()}
+        max={moment("20:00:00", "HH:mm:ss").toDate()}
         onSelectEvent={(event) => {
           // openModal();
           alert(event.title);
