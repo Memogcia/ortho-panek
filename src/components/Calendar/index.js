@@ -10,11 +10,13 @@ import { useForm } from "react-hook-form";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import schema from "components/Calendar/schema";
 import { DateTimePicker } from "components/HFMUI";
+import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
+import { v1 as uuidv1 } from "uuid";
 
 moment.locale("es");
 const localizer = momentLocalizer(moment);
 
-const CalendarComponent = () => {
+const CalendarComponent = ({ insertAppointment, appointments }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const formOptions = {
@@ -33,7 +35,14 @@ const CalendarComponent = () => {
   const createPreAppointment = ({ start, end }) => {
     setValue("start_date_time", start, { shouldValidate: true });
     setValue("end_date_time", end, { shouldValidate: true });
-    setModalIsOpen(true);
+    openModal();
+  };
+
+  const handleCreateAppointment = async (formData) => {
+    const appointment = await insertAppointment({
+      variables: { id: uuidv1(), ...formData },
+    });
+    closeModal();
   };
 
   return (
@@ -43,43 +52,73 @@ const CalendarComponent = () => {
         onClose={closeModal}
         title="Crear cita"
         actionButtonText="Crear cita"
+        form="create-appointment-form"
+        maxWidth="sm"
       >
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12}>
-            <DateTimePicker
-              control={control}
-              required
-              id="start_date_time"
-              name="start_date_time"
-              label="Fecha de inicio"
-              fullWidth
-              error={!!formState.errors?.start_date_time}
-            />
+        <form
+          id="create-appointment-form"
+          autoComplete="off"
+          noValidate
+          onSubmit={handleSubmit(handleCreateAppointment)}
+        >
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12}>
+              <AutoCompletePatients
+                control={control}
+                required
+                id="user_id"
+                name="user_id"
+                label="Paciente"
+                fullWidth
+                error={!!formState.errors?.user_id}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <DateTimePicker
+                control={control}
+                required
+                id="start_date_time"
+                name="start_date_time"
+                label="Fecha de inicio"
+                format="dd/MM/yyyy HH:mm:ss"
+                error={!!formState.errors?.start_date_time}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <DateTimePicker
+                control={control}
+                required
+                id="end_date_time"
+                name="end_date_time"
+                label="Fecha de fin"
+                format="dd/MM/yyyy HH:mm:ss"
+                error={!!formState.errors?.end_date_time}
+                fullWidth
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={12}>
-            <DateTimePicker
-              control={control}
-              required
-              id="end_date_time"
-              name="end_date_time"
-              label="Fecha de fin"
-              fullWidth
-              error={!!formState.errors?.end_date_time}
-            />
-          </Grid>
-        </Grid>
+        </form>
       </Modal>
       <Calendar
         localizer={localizer}
         selectable
-        events={[]}
+        events={appointments}
         defaultView={Views.WEEK}
         defaultDate={new Date()}
+        step={15}
+        startAccessor={(event) => new Date(event.start_date_time)}
+        endAccessor={(event) => new Date(event.end_date_time)}
+        titleAccessor={(event) => event.user.name}
         onSelectEvent={(event) => {
-          openModal();
+          // openModal();
           alert(event.title);
         }}
         onSelectSlot={createPreAppointment}
+        // eventPropGetter={(event) => {
+        //   if(event.type === 'diagnó')
+        // }}
       />
     </>
   );
