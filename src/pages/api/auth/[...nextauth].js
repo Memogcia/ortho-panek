@@ -2,6 +2,12 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
+const hashPasswordAsync = async (password) => {
+  const salt = await bcrypt.genSalt();
+  return bcrypt.hash(password, salt);
+};
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -27,6 +33,8 @@ export default NextAuth({
           "🚀 ~ file: [...nextauth].js ~ line 26 ~ authorize ~ credentials",
           credentials
         );
+
+        const hashedPassword = await hashPasswordAsync(credentials.password);
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
