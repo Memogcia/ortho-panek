@@ -17,7 +17,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import PropTypes from "prop-types";
-import { signOut } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
 import { mainListItems, secondaryListItems } from "./listItems";
 
 function Copyright() {
@@ -108,6 +108,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Layout({ children }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [session, loading] = useSession();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -144,20 +145,22 @@ export default function Layout({ children }) {
           >
             Dr. Eliezer García
           </Typography>
-          <IconButton color="inherit">
+          {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
-          </IconButton>
-          <Button
-            color="inherit"
-            onClick={(e) => {
-              e.preventDefault();
-              signOut();
-            }}
-          >
-            CERRAR SESION
-          </Button>
+          </IconButton> */}
+          {session && (
+            <Button
+              color="inherit"
+              onClick={(e) => {
+                e.preventDefault();
+                signOut();
+              }}
+            >
+              CERRAR SESION
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
