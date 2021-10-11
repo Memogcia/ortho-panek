@@ -5,4 +5,6 @@ export const COMMON_ROUTES = Object.freeze({
   calendar: "/calendar",
   update_patient: "/update-patient",
   create_patient: "/create-patient",
+  signIn: "/auth/credentials-signin",
+  signUp: "/auth/credentials-signup",
 });
