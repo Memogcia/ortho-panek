@@ -2,13 +2,15 @@ import "moment/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
+import { DateTimePicker, Select } from "components/HFMUI";
+import { Grid, makeStyles } from "@material-ui/core";
 
 import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
-import { DateTimePicker } from "components/HFMUI";
-import { Grid } from "@material-ui/core";
 import Modal from "components/Modal";
 import PropTypes from "prop-types";
 import appointmentsPropTypes from "proptypes/appointments";
+import appointmentsTypes from "constants/appointmentsTypes";
+import { capitalize } from "utils";
 import moment from "moment";
 import schema from "components/Calendar/schema";
 import { useForm } from "react-hook-form";
@@ -19,7 +21,53 @@ import { yupResolver } from "@hookform/resolvers/yup";
 moment.locale("es");
 const localizer = momentLocalizer(moment);
 
+const useStyles = makeStyles((theme) => ({
+  revisión: {
+    backgroundColor: "#761863",
+  },
+  consulta: {
+    backgroundColor: "#cb792d",
+  },
+  "primera vez": {
+    backgroundColor: "#309433",
+  },
+  estudio: {
+    backgroundColor: "#286044",
+  },
+  inicio: {
+    backgroundColor: "#201b59",
+  },
+  presupuesto: {
+    backgroundColor: "#e6e13a",
+  },
+  retención: {
+    backgroundColor: "#d77e2d",
+  },
+  inconsistente: {
+    backgroundColor: "#dd254e",
+  },
+  "no pagó": {
+    backgroundColor: "#fff",
+  },
+  "recordar cita": {
+    backgroundColor: "#29625c",
+  },
+  "paciente activo": {
+    backgroundColor: "#1980ab",
+  },
+  "cita extra": {
+    backgroundColor: "#02225a",
+  },
+
+  paper: {
+    width: "100%",
+    height: "100%",
+    marginBottom: theme.spacing(2),
+  },
+}));
+
 const CalendarComponent = ({ insertAppointment, appointments }) => {
+  const classes = useStyles();
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const formOptions = {
@@ -48,21 +96,11 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
     closeModal();
   };
 
-  // const customEventPropGetter = (selectedEventData) => {
-  //   const { resource } = selectedEventData;
-  //   const { id: resourceId } = resource;
+  const customEventPropGetter = (event) => {
+    const { type } = event;
 
-  //   switch (resourceId) {
-  //     case resourceIds.LIDO_HOLIDAYS:
-  //       return { className: styles.holidayEvent };
-  //     case resourceIds.BATCHES:
-  //       return { className: styles.batchesEvent };
-  //     case resourceIds.SUBSTITUTE_CLASSES:
-  //       return { className: styles.substituteClasses };
-  //     default:
-  //       return {};
-  //   }
-  // };
+    return { className: classes[type] };
+  };
 
   // const customDayPropGetter = useCallback(date => (date.getDay() === 0 ? { className: styles.weekOff } : {}), []);
 
@@ -92,6 +130,21 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
                 label="Paciente"
                 fullWidth
                 error={!!formState.errors?.user_id}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Select
+                control={control}
+                required
+                id="type"
+                name="type"
+                label="Typo de cita"
+                options={appointmentsTypes.map((type) => ({
+                  label: capitalize(type),
+                  value: type,
+                }))}
+                fullWidth
+                error={!!formState.errors?.consulting_room}
               />
             </Grid>
 
@@ -139,9 +192,7 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
           alert(event.title);
         }}
         onSelectSlot={createPreAppointment}
-        // eventPropGetter={(event) => {
-        //   if(event.type === 'diagnó')
-        // }}
+        eventPropGetter={customEventPropGetter}
       />
     </>
   );
