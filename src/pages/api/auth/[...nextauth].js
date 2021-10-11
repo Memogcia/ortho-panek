@@ -8,6 +8,46 @@ import jwt from "jsonwebtoken";
 export default NextAuth({
   // https://next-auth.js.org/configuration/providers
   providers: [
+    Providers.Credentials({
+      // The name to display on the sign in form (e.g. 'Sign in with...')
+      name: "Credentials",
+      // The credentials is used to generate a suitable form on the sign in page.
+      // You can specify whatever fields you are expecting to be submitted.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        email: {
+          label: "Correo electrónico",
+          type: "text",
+          placeholder: "ejemplo@gmail.com",
+        },
+        password: { label: "Contraseña", type: "password" },
+      },
+      async authorize(credentials, req) {
+        console.log(
+          "🚀 ~ file: [...nextauth].js ~ line 26 ~ authorize ~ credentials",
+          credentials
+        );
+        // You need to provide your own logic here that takes the credentials
+        // submitted and returns either a object representing a user or value
+        // that is false/null if the credentials are invalid.
+        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
+        // You can also use the `req` object to obtain additional parameters
+        // (i.e., the request IP address)
+        const res = await fetch("/your/endpoint", {
+          method: "POST",
+          body: JSON.stringify(credentials),
+          headers: { "Content-Type": "application/json" },
+        });
+        const user = await res.json();
+
+        // If no error and we have user data, return it
+        if (res.ok && user) {
+          return user;
+        }
+        // Return null if user data could not be retrieved
+        return null;
+      },
+    }),
     Providers.Auth0({
       clientId: process.env.AUTH0_ID,
       clientSecret: process.env.AUTH0_SECRET,
@@ -94,7 +134,7 @@ export default NextAuth({
   // pages is not specified for that route.
   // https://next-auth.js.org/configuration/pages
   pages: {
-    // signIn: '/auth/signin',  // Displays signin buttons
+    // signIn: "/auth/signin", // Displays signin buttons
     // signOut: '/auth/signout', // Displays form with sign out button
     // error: '/auth/error', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // Used for check email page
@@ -107,7 +147,7 @@ export default NextAuth({
   callbacks: {
     // async signIn(user, account, profile) { return true },
     async redirect(url, baseUrl) {
-      return baseUrl;
+      return `${baseUrl}/patients`;
     },
     async session(session, token) {
       const encondedToken = jwt.sign(token, process.env.SECRET, {
