@@ -52,11 +52,11 @@ function MyApp({ Component, pageProps }) {
       }}
       session={pageProps.session}
     >
-      <ApolloProvider client={apolloClient}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {token && (
-            <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {token && (
+          <>
+            <ApolloProvider client={apolloClient}>
               <Head>
                 <title>Ortho Panel</title>
                 <meta
@@ -70,15 +70,15 @@ function MyApp({ Component, pageProps }) {
                   <Component {...pageProps} />
                 </ClientOnly>
               </Layout>
-            </>
-          )}
-          {!token && (
-            <ClientOnly>
-              <Component {...pageProps} />
-            </ClientOnly>
-          )}
-        </ThemeProvider>
-      </ApolloProvider>
+            </ApolloProvider>
+          </>
+        )}
+        {!token && (
+          <ClientOnly>
+            <Component {...pageProps} />
+          </ClientOnly>
+        )}
+      </ThemeProvider>
     </Provider>
   );
 }
