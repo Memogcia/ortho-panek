@@ -29,31 +29,39 @@ export default NextAuth({
         password: { label: "Contraseña", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log(
-          "🚀 ~ file: [...nextauth].js ~ line 26 ~ authorize ~ credentials",
-          credentials
-        );
+        let password;
 
-        const hashedPassword = await hashPasswordAsync(credentials.password);
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        const res = await fetch("/your/endpoint", {
+        const query = `query GetUserByEmailQuery($email: String = "") {
+          users(where: {email: {_eq: $email}}) {
+            password
+            id
+            name
+            role
+          }
+        }      
+        `;
+        const variables = { email: credentials.email };
+        const response = await fetch(process.env.HASURA_GRAPHQL_API, {
           method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
+          headers: { "x-hasura-admin-secret": process.env.HASURA_SECRET },
+          body: JSON.stringify({
+            query,
+            variables,
+          }),
         });
-        const user = await res.json();
+        const parsedResponse = await response.json();
 
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user;
+        if ("data" in parsedResponse && parsedResponse.data.users.length > 0) {
+          password = parsedResponse.data.users[0].password;
+        } else {
+          return null;
         }
-        // Return null if user data could not be retrieved
-        return null;
+
+        const hash = await hashPasswordAsync(credentials.password);
+        const passwordMatch = bcrypt.compareSync(password, hash);
+
+        if (!passwordMatch) return null;
+        return parsedResponse.data.users[0];
       },
     }),
     Providers.Auth0({
@@ -142,7 +150,7 @@ export default NextAuth({
   // pages is not specified for that route.
   // https://next-auth.js.org/configuration/pages
   pages: {
-    // signIn: "/auth/signin", // Displays signin buttons
+    signIn: "/auth/credentials-signin", // Displays signin buttons
     // signOut: '/auth/signout', // Displays form with sign out button
     // error: '/auth/error', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // Used for check email page
