@@ -76,9 +76,11 @@ export function initializeApollo(token, initialState = null) {
 }
 
 export function useApollo(token, initialState) {
-  const store = useMemo(
-    () => initializeApollo(token, initialState),
-    [initialState]
-  );
+  let store;
+  if (token)
+    store = useMemo(
+      () => initializeApollo(token, initialState),
+      [initialState]
+    );
   return store;
 }
