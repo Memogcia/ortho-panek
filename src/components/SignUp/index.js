@@ -2,9 +2,6 @@ import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -14,6 +11,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Copyright from "components/Copyright";
 import { COMMON_ROUTES } from "constants/routes";
+import { yupResolver } from "@hookform/resolvers/yup";
+import signUpSchema from "components/SignUp/signUpSchema";
+import { useForm } from "react-hook-form";
+import { TextField } from "components/HFMUI";
+import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +39,33 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const router = useRouter();
+
+  const formOptions = {
+    resolver: yupResolver(signUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      password2: "",
+    },
+  };
+  const { control, handleSubmit, formState } = useForm(formOptions);
+
+  const onSubmit = async ({ name, email, password }) => {
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+    if (res.ok) router.push("/auth/credentials-signin");
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,33 +77,28 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form
+          className={classes.form}
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
+                control={control}
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
                 id="firstName"
-                label="First Name"
+                label="Nombre completo"
                 autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
+                error={!!formState.errors?.name}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
+                control={control}
                 variant="outlined"
                 required
                 fullWidth
@@ -82,24 +106,34 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                error={!!formState.errors?.email}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
+                control={control}
                 variant="outlined"
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Contraseña"
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={!!formState.errors?.password}
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
+              <TextField
+                control={control}
+                variant="outlined"
+                required
+                fullWidth
+                name="passwordConfirmation"
+                label="Confirmar contraseña"
+                type="password"
+                id="password-confirmation"
+                error={!!formState.errors?.passwordConfirmation}
               />
             </Grid>
           </Grid>
