@@ -3,12 +3,6 @@ import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
-const hashPasswordAsync = async (password) => {
-  const salt = await bcrypt.genSalt();
-  return bcrypt.hash(password, salt);
-};
-
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
@@ -16,7 +10,8 @@ export default NextAuth({
   providers: [
     Providers.Credentials({
       async authorize(credentials, req) {
-        let password;
+        const { email, password } = credentials;
+        let passwordFromUser;
 
         const query = `query GetUserByEmailQuery($email: String = "") {
           users(where: {email: {_eq: $email}}) {
@@ -24,10 +19,11 @@ export default NextAuth({
             id
             name
             role
+            email
           }
         }      
         `;
-        const variables = { email: credentials.email };
+        const variables = { email };
         const response = await fetch(process.env.HASURA_GRAPHQL_API, {
           method: "POST",
           headers: { "x-hasura-admin-secret": process.env.HASURA_SECRET },
@@ -39,13 +35,12 @@ export default NextAuth({
         const parsedResponse = await response.json();
 
         if ("data" in parsedResponse && parsedResponse.data.users.length > 0) {
-          password = parsedResponse.data.users[0].password;
+          passwordFromUser = parsedResponse.data.users[0].password;
         } else {
           return null;
         }
 
-        const hash = await hashPasswordAsync(credentials.password);
-        const passwordMatch = bcrypt.compareSync(password, hash);
+        const passwordMatch = await bcrypt.compare(password, passwordFromUser);
 
         if (!passwordMatch) return null;
         return parsedResponse.data.users[0];
@@ -150,7 +145,7 @@ export default NextAuth({
   callbacks: {
     // async signIn(user, account, profile) { return true },
     async redirect(url, baseUrl) {
-      return `${baseUrl}/patients`;
+      return baseUrl;
     },
     async session(session, token) {
       const encondedToken = jwt.sign(token, process.env.SECRET, {
