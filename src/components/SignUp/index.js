@@ -47,7 +47,7 @@ export default function SignUp() {
       name: "",
       email: "",
       password: "",
-      password2: "",
+      passwordConfirmation: "",
     },
   };
   const { control, handleSubmit, formState } = useForm(formOptions);
