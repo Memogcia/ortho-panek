@@ -2,7 +2,6 @@ import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -11,7 +10,13 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { COMMON_ROUTES } from "constants/routes";
-import Copyright from "./Copyright";
+import { yupResolver } from "@hookform/resolvers/yup";
+import signInSchema from "components/SignIn/signInSchema";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/dist/client/router";
+import { signIn } from "next-auth/client";
+import { TextField } from "components/HFMUI";
+import Copyright from "../Copyright";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,9 +38,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn(props) {
-  const { csrfToken } = props;
+export default function SignIn() {
   const classes = useStyles();
+  const router = useRouter();
+
+  const formOptions = {
+    resolver: yupResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  };
+  const { control, handleSubmit, formState } = useForm(formOptions);
+
+  const onSubmit = async ({ email, password }) => {
+    const status = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+    if (status.ok) router.push("/patients");
+    console.log("🚀 ~ file: SignIn.js ~ line 63 ~ onSubmit ~ status", status);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -49,12 +73,11 @@ export default function SignIn(props) {
         </Typography>
         <form
           className={classes.form}
-          method="post"
-          action="/api/auth/callback/credentials"
+          onSubmit={handleSubmit(onSubmit)}
           noValidate
         >
-          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
           <TextField
+            control={control}
             variant="outlined"
             margin="normal"
             required
@@ -64,8 +87,10 @@ export default function SignIn(props) {
             name="email"
             autoComplete="email"
             autoFocus
+            error={!!formState.errors?.email}
           />
           <TextField
+            control={control}
             variant="outlined"
             margin="normal"
             required
@@ -75,6 +100,7 @@ export default function SignIn(props) {
             type="password"
             id="password"
             autoComplete="current-password"
+            error={!!formState.errors?.password}
           />
           <Button
             type="submit"
