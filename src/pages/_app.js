@@ -11,6 +11,7 @@ import { useApollo } from "lib/apollo-client";
 import ClientOnly from "components/ClientOnly";
 import { useEffect } from "react";
 import { useRouter } from "next/dist/client/router";
+import Auth from "components/Auth";
 
 function MyApp({ Component, pageProps }) {
   const token = pageProps?.session?.token;
@@ -54,8 +55,8 @@ function MyApp({ Component, pageProps }) {
     >
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {token && (
-          <>
+        {Component.auth ? (
+          <Auth>
             <ApolloProvider client={apolloClient}>
               <Head>
                 <title>Ortho Panel</title>
@@ -71,12 +72,9 @@ function MyApp({ Component, pageProps }) {
                 </ClientOnly>
               </Layout>
             </ApolloProvider>
-          </>
-        )}
-        {!token && (
-          <ClientOnly>
-            <Component {...pageProps} />
-          </ClientOnly>
+          </Auth>
+        ) : (
+          <Component {...pageProps} />
         )}
       </ThemeProvider>
     </Provider>
