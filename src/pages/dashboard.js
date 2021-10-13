@@ -5,6 +5,7 @@ import Deposits from "components/Deposits";
 import Orders from "components/Orders";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
+import { getSession } from "next-auth/client";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function dashboard() {
+function Dashboard() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   return (
@@ -45,4 +46,13 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+Dashboard.auth = true;
+export default Dashboard;
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      session: await getSession(context),
+    },
+  };
+}

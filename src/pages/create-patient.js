@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function createPatients() {
+function CreatePatients() {
   const classes = useStyles();
 
   const [insertPatientAddress] = useMutation(INSERT_PATIENT_ADDRESS);
@@ -106,7 +106,8 @@ function createPatients() {
   );
 }
 
-export default createPatients;
+CreatePatients.auth = true;
+export default CreatePatients;
 
 export async function getServerSideProps(context) {
   return {

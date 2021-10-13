@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function patients() {
+function Patients() {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -178,7 +178,9 @@ function patients() {
   );
 }
 
-export default patients;
+Patients.auth = true;
+
+export default Patients;
 
 export async function getServerSideProps(context) {
   return {

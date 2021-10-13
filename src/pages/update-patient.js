@@ -142,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function patients() {
+function UpdatePatients() {
   const classes = useStyles();
   const router = useRouter();
   const { id } = router.query;
@@ -201,7 +201,9 @@ function patients() {
   );
 }
 
-export default patients;
+UpdatePatients.auth = true;
+
+export default UpdatePatients;
 
 export async function getServerSideProps(context) {
   return {

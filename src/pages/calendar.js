@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function patients() {
+function Calendar() {
   const classes = useStyles();
   const { data } = useSubscription(GET_APPOINTMENTS);
   const [insertAppointment] = useMutation(INSERT_APPOINTMENT);
@@ -93,7 +93,8 @@ function patients() {
   );
 }
 
-export default patients;
+Calendar.auth = true;
+export default Calendar;
 
 export async function getServerSideProps(context) {
   return {
