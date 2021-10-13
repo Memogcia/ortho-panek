@@ -13,23 +13,21 @@ const httpLink = (token) =>
   });
 
 const wsLink = (token) =>
-  process.browser
-    ? new WebSocketLink({
-        uri: process.env.NEXT_PUBLIC_WS_GRAPHQL_API,
-        options: {
-          reconnect: true,
-          timeout: 30000,
-          connectionParams: {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+  new WebSocketLink({
+    uri: process.env.NEXT_PUBLIC_WS_GRAPHQL_API,
+    options: {
+      reconnect: true,
+      timeout: 30000,
+      connectionParams: {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      })
-    : null;
+      },
+    },
+  });
 
-const link = (token) =>
-  wsLink(token)
+const link = (token) => {
+  return process.browser
     ? split(
         ({ query }) => {
           const def = getMainDefinition(query);
@@ -42,19 +40,25 @@ const link = (token) =>
         httpLink(token)
       )
     : httpLink(token);
+};
 
 let apolloClient;
+let savedToken;
 
-const createApolloClient = (token) =>
-  new ApolloClient({
+const createApolloClient = (token) => {
+  return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: link(token),
     cache: new InMemoryCache(),
   });
+};
 
 export function initializeApollo(token, initialState = null) {
   // eslint-disable-next-line no-underscore-dangle
-  const _apolloClient = apolloClient ?? createApolloClient(token);
+  let _apolloClient;
+  if (!savedToken && token) _apolloClient = createApolloClient(token);
+  else if (!apolloClient) _apolloClient = createApolloClient(token);
+  else _apolloClient = apolloClient;
 
   // If your page has Next.js data fetching methods that use Apollo Client,
   // the initial state gets hydrated here
@@ -72,15 +76,14 @@ export function initializeApollo(token, initialState = null) {
 
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;
+  savedToken = token;
   return _apolloClient;
 }
 
 export function useApollo(token, initialState) {
-  let store;
-  if (token)
-    store = useMemo(
-      () => initializeApollo(token, initialState),
-      [initialState]
-    );
+  const store = useMemo(() => {
+    if (token) return initializeApollo(token, initialState);
+    return null;
+  }, [initialState, token]);
   return store;
 }
