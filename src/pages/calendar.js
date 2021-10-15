@@ -9,18 +9,18 @@ import CalendarComponent from "components/Calendar";
 const GET_APPOINTMENTS = gql`
   subscription GetAppointmentsSubscription {
     appointments {
-      comments
+      # comments
       end_date_time
       id
-      patient_assisted
+      # patient_assisted
       start_date_time
-      status
+      # status
       type
       user {
         name
-        phone
-        cellphone
-        email
+        # phone
+        # cellphone
+        # email
       }
     }
   }
