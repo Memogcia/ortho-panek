@@ -68,7 +68,7 @@ const Modal = (props) => {
         <DialogTitle id="alert-dialog-title" onClose={onClose}>
           {title}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           {handleRenderIcon()}
           <DialogContentText id="alert-dialog-description">
             {text}
