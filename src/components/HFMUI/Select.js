@@ -19,7 +19,13 @@ const Select = forwardRef(({ control, name, options, ...rest }, ref) => {
       name={name}
       control={control}
       render={({ field }) => (
-        <MUITextField select inputRef={ref} {...field} {...rest}>
+        <MUITextField
+          select
+          inputRef={ref}
+          variant="outlined"
+          {...field}
+          {...rest}
+        >
           <MenuItem value="">Seleccione una opción</MenuItem>
           {renderOptions()}
         </MUITextField>

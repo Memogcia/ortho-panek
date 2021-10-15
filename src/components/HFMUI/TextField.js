@@ -9,7 +9,7 @@ const TextField = forwardRef(({ control, name, ...rest }, ref) => {
       control={control}
       name={name}
       render={({ field }) => (
-        <MUITextfield inputRef={ref} {...field} {...rest} />
+        <MUITextfield inputRef={ref} variant="outlined" {...field} {...rest} />
       )}
     />
   );

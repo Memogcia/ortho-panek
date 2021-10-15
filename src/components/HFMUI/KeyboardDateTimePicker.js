@@ -22,7 +22,7 @@ const DateTimePicker = ({ control, name, ...rest }) => {
             disableFuture
             disableToolbar
             variant="inline"
-            // inputVariant="outlined"
+            inputVariant="outlined"
             format="dd/MM/yyyy"
             invalidDateMessage="Fecha inválida"
             invalidLabel="Fecha inválida"
