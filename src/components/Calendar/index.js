@@ -138,7 +138,7 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
                 required
                 id="type"
                 name="type"
-                label="Typo de cita"
+                label="Tipo de cita"
                 options={appointmentsTypes.map((type) => ({
                   label: capitalize(type),
                   value: type,
