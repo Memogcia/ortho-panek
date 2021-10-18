@@ -96,7 +96,8 @@ const CalendarComponent = ({
       comments: "",
     },
   };
-  const { control, handleSubmit, formState, setValue } = useForm(formOptions);
+  const { control, handleSubmit, formState, setValue, reset } =
+    useForm(formOptions);
 
   useEffect(() => {
     if (
@@ -121,6 +122,8 @@ const CalendarComponent = ({
 
   const closeModal = () => {
     setModalIsOpen(false);
+    reset();
+    setSelectedAppointment(null);
   };
 
   const createPreAppointment = ({ start, end }) => {
