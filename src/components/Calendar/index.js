@@ -3,24 +3,28 @@ import "moment/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
-import { DateTimePicker, Select, TextField } from "components/HFMUI";
-import { Grid, makeStyles } from "@material-ui/core";
+import {
+  DateTimePicker,
+  TextField as HFTextField,
+  Select,
+} from "components/HFMUI";
+import { Grid, TextField, makeStyles } from "@material-ui/core";
+import appointmentsPropTypes, {
+  appointmentPropType,
+} from "proptypes/appointments";
+import { useEffect, useState } from "react";
 
 import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
 import Modal from "components/Modal";
 import PropTypes from "prop-types";
-import appointmentsPropTypes, {
-  appointmentPropType,
-} from "proptypes/appointments";
+import RenderIf from "components/RenderIf";
 import appointmentsTypes from "constants/appointmentsTypes";
 import { capitalize } from "utils";
 import moment from "moment";
 import schema from "components/Calendar/schema";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
 import { v1 as uuidv1 } from "uuid";
 import { yupResolver } from "@hookform/resolvers/yup";
-import RenderIf from "components/RenderIf";
 
 moment.locale("es");
 const localizer = momentLocalizer(moment);
@@ -79,7 +83,7 @@ const CalendarComponent = ({
 }) => {
   const classes = useStyles();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   const formOptions = {
     resolver: yupResolver(schema),
@@ -107,6 +111,7 @@ const CalendarComponent = ({
       setValue("comments", comments, { shouldValidate: true });
       setValue("status", status, { shouldValidate: true });
       setValue("patient_assisted", patient_assisted, { shouldValidate: true });
+      setSelectedAppointment(appointmentDetail.appointments[0]);
     }
   }, [appointmentDetail, isLoadingAppointmentDetail]);
 
@@ -134,7 +139,6 @@ const CalendarComponent = ({
         appointmentId: id,
       },
     });
-    setSelectedAppointmentId(id);
     setValue("start_date_time", start_date_time, { shouldValidate: true });
     setValue("end_date_time", end_date_time, { shouldValidate: true });
     openModal();
@@ -160,9 +164,9 @@ const CalendarComponent = ({
       <Modal
         open={modalIsOpen}
         onClose={closeModal}
-        title={selectedAppointmentId ? "Actualizar cita" : "Crear cita"}
+        title={selectedAppointment ? "Actualizar cita" : "Crear cita"}
         actionButtonText={
-          selectedAppointmentId ? "Actualizar cita" : "Crear cita"
+          selectedAppointment ? "Actualizar cita" : "Crear cita"
         }
         form="create-appointment-form"
         maxWidth="sm"
@@ -174,37 +178,43 @@ const CalendarComponent = ({
           onSubmit={handleSubmit(handleCreateAppointment)}
         >
           <Grid container spacing={3}>
-            {/* <RenderIf condition={!!selectedAppointmentId}>
+            <RenderIf condition={!!selectedAppointment}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  control={control}
-                  id="comments"
-                  name="Nombre del paciente"
-                  label="Comentarios"
-                  error={!!formState.errors?.comments}
+                  name="pacient-name"
+                  label="Nombre del paciente"
+                  value={selectedAppointment?.user?.name}
+                  variant="outlined"
+                  disabled
                   fullWidth
-                  multiline
-                  rows={2}
-                  rowsMax={4}
                 />
               </Grid>
-            </RenderIf> */}
-            {/* <RenderIf condition={!!selectedAppointmentId}>
+            </RenderIf>
+            <RenderIf condition={!!selectedAppointment}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  control={control}
-                  id="comments"
-                  name="comments"
-                  label="Comentarios"
-                  error={!!formState.errors?.comments}
+                  name="user-phone"
+                  label="Teléfono local"
+                  value={selectedAppointment?.user?.phone}
+                  variant="outlined"
+                  disabled
                   fullWidth
-                  multiline
-                  rows={2}
-                  rowsMax={4}
                 />
               </Grid>
-            </RenderIf> */}
-            <RenderIf condition={!selectedAppointmentId}>
+            </RenderIf>
+            <RenderIf condition={!!selectedAppointment}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="user-phone"
+                  label="Teléfono celular"
+                  value={selectedAppointment?.user?.cellphone}
+                  variant="outlined"
+                  disabled
+                  fullWidth
+                />
+              </Grid>
+            </RenderIf>
+            <RenderIf condition={!selectedAppointment}>
               <Grid item xs={12} sm={12}>
                 <AutoCompletePatients
                   control={control}
@@ -256,9 +266,9 @@ const CalendarComponent = ({
                 fullWidth
               />
             </Grid>
-            <RenderIf condition={!!selectedAppointmentId}>
+            <RenderIf condition={!!selectedAppointment}>
               <Grid item xs={12} sm={12}>
-                <TextField
+                <HFTextField
                   control={control}
                   id="comments"
                   name="comments"
