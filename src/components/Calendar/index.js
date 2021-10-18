@@ -1,22 +1,26 @@
+/* eslint-disable camelcase */
 import "moment/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
-import { DateTimePicker, Select } from "components/HFMUI";
+import { DateTimePicker, Select, TextField } from "components/HFMUI";
 import { Grid, makeStyles } from "@material-ui/core";
 
 import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
 import Modal from "components/Modal";
 import PropTypes from "prop-types";
-import appointmentsPropTypes from "proptypes/appointments";
+import appointmentsPropTypes, {
+  appointmentPropType,
+} from "proptypes/appointments";
 import appointmentsTypes from "constants/appointmentsTypes";
 import { capitalize } from "utils";
 import moment from "moment";
 import schema from "components/Calendar/schema";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v1 as uuidv1 } from "uuid";
 import { yupResolver } from "@hookform/resolvers/yup";
+import RenderIf from "components/RenderIf";
 
 moment.locale("es");
 const localizer = momentLocalizer(moment);
@@ -66,14 +70,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CalendarComponent = ({ insertAppointment, appointments }) => {
+const CalendarComponent = ({
+  insertAppointment,
+  appointments,
+  getAppointment,
+  appointmentDetail,
+  isLoadingAppointmentDetail,
+}) => {
   const classes = useStyles();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
 
   const formOptions = {
     resolver: yupResolver(schema),
+    defaultValues: {
+      type: "",
+      start_date_time: null,
+      end_date_time: null,
+      status: "",
+      patient_assisted: false,
+      comments: "",
+    },
   };
   const { control, handleSubmit, formState, setValue } = useForm(formOptions);
+
+  useEffect(() => {
+    if (
+      appointmentDetail &&
+      Array.isArray(appointmentDetail.appointments) &&
+      appointmentDetail.appointments.length > 0 &&
+      !isLoadingAppointmentDetail
+    ) {
+      const { type, comments, status, patient_assisted } =
+        appointmentDetail.appointments[0];
+      setValue("type", type, { shouldValidate: true });
+      setValue("comments", comments, { shouldValidate: true });
+      setValue("status", status, { shouldValidate: true });
+      setValue("patient_assisted", patient_assisted, { shouldValidate: true });
+    }
+  }, [appointmentDetail, isLoadingAppointmentDetail]);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -86,6 +121,22 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
   const createPreAppointment = ({ start, end }) => {
     setValue("start_date_time", start, { shouldValidate: true });
     setValue("end_date_time", end, { shouldValidate: true });
+    openModal();
+  };
+
+  const handleGetAppointmentDetails = async ({
+    id,
+    start_date_time,
+    end_date_time,
+  }) => {
+    await getAppointment({
+      variables: {
+        appointmentId: id,
+      },
+    });
+    setSelectedAppointmentId(id);
+    setValue("start_date_time", start_date_time, { shouldValidate: true });
+    setValue("end_date_time", end_date_time, { shouldValidate: true });
     openModal();
   };
 
@@ -109,8 +160,10 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
       <Modal
         open={modalIsOpen}
         onClose={closeModal}
-        title="Crear cita"
-        actionButtonText="Crear cita"
+        title={selectedAppointmentId ? "Actualizar cita" : "Crear cita"}
+        actionButtonText={
+          selectedAppointmentId ? "Actualizar cita" : "Crear cita"
+        }
         form="create-appointment-form"
         maxWidth="sm"
       >
@@ -121,17 +174,49 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
           onSubmit={handleSubmit(handleCreateAppointment)}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={12}>
-              <AutoCompletePatients
-                control={control}
-                required
-                id="user_id"
-                name="user_id"
-                label="Paciente"
-                fullWidth
-                error={!!formState.errors?.user_id}
-              />
-            </Grid>
+            {/* <RenderIf condition={!!selectedAppointmentId}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  control={control}
+                  id="comments"
+                  name="Nombre del paciente"
+                  label="Comentarios"
+                  error={!!formState.errors?.comments}
+                  fullWidth
+                  multiline
+                  rows={2}
+                  rowsMax={4}
+                />
+              </Grid>
+            </RenderIf> */}
+            {/* <RenderIf condition={!!selectedAppointmentId}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  control={control}
+                  id="comments"
+                  name="comments"
+                  label="Comentarios"
+                  error={!!formState.errors?.comments}
+                  fullWidth
+                  multiline
+                  rows={2}
+                  rowsMax={4}
+                />
+              </Grid>
+            </RenderIf> */}
+            <RenderIf condition={!selectedAppointmentId}>
+              <Grid item xs={12} sm={12}>
+                <AutoCompletePatients
+                  control={control}
+                  required
+                  id="user_id"
+                  name="user_id"
+                  label="Paciente"
+                  fullWidth
+                  error={!!formState.errors?.user_id}
+                />
+              </Grid>
+            </RenderIf>
             <Grid item xs={12} sm={12}>
               <Select
                 control={control}
@@ -147,7 +232,6 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
                 error={!!formState.errors?.consulting_room}
               />
             </Grid>
-
             <Grid item xs={12} sm={12}>
               <DateTimePicker
                 control={control}
@@ -172,6 +256,21 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
                 fullWidth
               />
             </Grid>
+            <RenderIf condition={!!selectedAppointmentId}>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  control={control}
+                  id="comments"
+                  name="comments"
+                  label="Comentarios"
+                  error={!!formState.errors?.comments}
+                  fullWidth
+                  multiline
+                  rows={2}
+                  rowsMax={4}
+                />
+              </Grid>
+            </RenderIf>
           </Grid>
         </form>
       </Modal>
@@ -187,10 +286,7 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
         titleAccessor={(event) => event.user.name}
         min={moment("08:00:00", "HH:mm:ss").toDate()}
         max={moment("20:00:00", "HH:mm:ss").toDate()}
-        onSelectEvent={(event) => {
-          // openModal();
-          alert(event.title);
-        }}
+        onSelectEvent={handleGetAppointmentDetails}
         onSelectSlot={createPreAppointment}
         eventPropGetter={customEventPropGetter}
       />
@@ -200,12 +296,18 @@ const CalendarComponent = ({ insertAppointment, appointments }) => {
 
 CalendarComponent.propTypes = {
   insertAppointment: PropTypes.func,
+  getAppointment: PropTypes.func,
   appointments: appointmentsPropTypes,
+  appointmentDetail: appointmentPropType,
+  isLoadingAppointmentDetail: PropTypes.bool,
 };
 
 CalendarComponent.defaultProps = {
   insertAppointment: null,
+  getAppointment: null,
   appointments: [],
+  appointmentDetail: null,
+  isLoadingAppointmentDetail: false,
 };
 
 export default CalendarComponent;

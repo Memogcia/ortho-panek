@@ -1,4 +1,9 @@
-import { gql, useMutation, useSubscription } from "@apollo/client";
+import {
+  gql,
+  useLazyQuery,
+  useMutation,
+  useSubscription,
+} from "@apollo/client";
 /* eslint-disable react/forbid-prop-types */
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -21,6 +26,24 @@ const GET_APPOINTMENTS = gql`
         # phone
         # cellphone
         # email
+      }
+    }
+  }
+`;
+
+const GET_APPOINTMENT = gql`
+  query GetAppintmentDetails($appointmentId: uuid = "") {
+    appointments(where: { id: { _eq: $appointmentId } }) {
+      comments
+      end_date_time
+      start_date_time
+      patient_assisted
+      status
+      type
+      user {
+        name
+        phone
+        cellphone
       }
     }
   }
@@ -82,12 +105,19 @@ function Calendar() {
   const classes = useStyles();
   const { data } = useSubscription(GET_APPOINTMENTS);
   const [insertAppointment] = useMutation(INSERT_APPOINTMENT);
+  const [
+    getAppointment,
+    { data: appointmentDetail, loading: isLoadingAppointmentDetail, error },
+  ] = useLazyQuery(GET_APPOINTMENT);
 
   return (
     <Paper className={classes.paper}>
       <CalendarComponent
         insertAppointment={insertAppointment}
         appointments={data?.appointments || []}
+        getAppointment={getAppointment}
+        appointmentDetail={appointmentDetail}
+        isLoadingAppointmentDetail={isLoadingAppointmentDetail}
       />
     </Paper>
   );
