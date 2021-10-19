@@ -1,11 +1,13 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-/* eslint-disable react/forbid-prop-types */
-import { makeStyles } from "@material-ui/core/styles";
 
+import { Box } from "@material-ui/core";
+import Copyright from "components/Copyright";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { getSession } from "next-auth/client";
 import UpdatePatient from "components/UpdatePatient";
+import { getSession } from "next-auth/client";
+/* eslint-disable react/forbid-prop-types */
+import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/dist/client/router";
 
 const GET_PATIENT = gql`
@@ -196,6 +198,9 @@ function UpdatePatients() {
             updatePatientAddress={updatePatientAddress}
           />
         </Paper>
+        <Box mt={5}>
+          <Copyright />
+        </Box>
       </Grid>
     </Grid>
   );
