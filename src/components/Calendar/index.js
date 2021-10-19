@@ -12,6 +12,7 @@ import { Grid, TextField, makeStyles } from "@material-ui/core";
 import appointmentsPropTypes, {
   appointmentPropType,
 } from "proptypes/appointments";
+import schema, { editSchema } from "components/Calendar/schema";
 import { useEffect, useState } from "react";
 
 import AutoCompletePatients from "components/HFMUI/AutoCompletePatients";
@@ -21,7 +22,6 @@ import RenderIf from "components/RenderIf";
 import appointmentsTypes from "constants/appointmentsTypes";
 import { capitalize } from "utils";
 import moment from "moment";
-import schema from "components/Calendar/schema";
 import { useForm } from "react-hook-form";
 import { v1 as uuidv1 } from "uuid";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -80,13 +80,14 @@ const CalendarComponent = ({
   getAppointment,
   appointmentDetail,
   isLoadingAppointmentDetail,
+  updateAppointment,
 }) => {
   const classes = useStyles();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   const formOptions = {
-    resolver: yupResolver(schema),
+    resolver: yupResolver(selectedAppointment ? editSchema : schema),
     defaultValues: {
       type: "",
       start_date_time: null,
@@ -144,13 +145,19 @@ const CalendarComponent = ({
     });
     setValue("start_date_time", start_date_time, { shouldValidate: true });
     setValue("end_date_time", end_date_time, { shouldValidate: true });
-    openModal();
+    return openModal();
   };
 
-  const handleCreateAppointment = async (formData) => {
-    await insertAppointment({
-      variables: { id: uuidv1(), ...formData },
-    });
+  const handleSubmitAppointmentForm = async (formData) => {
+    if (selectedAppointment) {
+      await updateAppointment({
+        variables: { id: selectedAppointment.id, ...formData },
+      });
+    } else {
+      await insertAppointment({
+        variables: { id: uuidv1(), ...formData },
+      });
+    }
     closeModal();
   };
 
@@ -178,7 +185,7 @@ const CalendarComponent = ({
           id="create-appointment-form"
           autoComplete="off"
           noValidate
-          onSubmit={handleSubmit(handleCreateAppointment)}
+          onSubmit={handleSubmit(handleSubmitAppointmentForm)}
         >
           <Grid container spacing={3}>
             <RenderIf condition={!!selectedAppointment}>
@@ -242,7 +249,7 @@ const CalendarComponent = ({
                   value: type,
                 }))}
                 fullWidth
-                error={!!formState.errors?.consulting_room}
+                error={!!formState.errors?.type}
               />
             </Grid>
             <Grid item xs={12} sm={12}>
@@ -310,6 +317,7 @@ const CalendarComponent = ({
 CalendarComponent.propTypes = {
   insertAppointment: PropTypes.func,
   getAppointment: PropTypes.func,
+  updateAppointment: PropTypes.func,
   appointments: appointmentsPropTypes,
   appointmentDetail: appointmentPropType,
   isLoadingAppointmentDetail: PropTypes.bool,
@@ -318,6 +326,7 @@ CalendarComponent.propTypes = {
 CalendarComponent.defaultProps = {
   insertAppointment: null,
   getAppointment: null,
+  updateAppointment: null,
   appointments: [],
   appointmentDetail: null,
   isLoadingAppointmentDetail: false,
