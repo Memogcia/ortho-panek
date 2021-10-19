@@ -276,21 +276,19 @@ const CalendarComponent = ({
                 fullWidth
               />
             </Grid>
-            <RenderIf condition={!!selectedAppointment}>
-              <Grid item xs={12} sm={12}>
-                <HFTextField
-                  control={control}
-                  id="comments"
-                  name="comments"
-                  label="Comentarios"
-                  error={!!formState.errors?.comments}
-                  fullWidth
-                  multiline
-                  rows={2}
-                  rowsMax={4}
-                />
-              </Grid>
-            </RenderIf>
+            <Grid item xs={12} sm={12}>
+              <HFTextField
+                control={control}
+                id="comments"
+                name="comments"
+                label="Comentarios"
+                error={!!formState.errors?.comments}
+                fullWidth
+                multiline
+                rows={2}
+                rowsMax={4}
+              />
+            </Grid>
           </Grid>
         </form>
       </Modal>
@@ -298,7 +296,7 @@ const CalendarComponent = ({
         localizer={localizer}
         selectable
         events={appointments}
-        defaultView={Views.MONTH}
+        defaultView={Views.WEEK}
         defaultDate={new Date()}
         step={15}
         startAccessor={(event) => new Date(event.start_date_time)}
