@@ -10,8 +10,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { v1 as uuidv1 } from "uuid";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { DateTimePicker, Select, TextField } from "./HFMUI";
 
 const useStyles = makeStyles((theme) => ({
@@ -165,7 +165,10 @@ export default function UpdatePatient({
               id="birth_date"
               name="birth_date"
               label="Fecha de nacimiento"
+              openTo="year"
+              views={["year", "month", "date"]}
               fullWidth
+              disableToolbar
               error={!!formState.errors?.birth_date}
             />
           </Grid>
@@ -176,7 +179,10 @@ export default function UpdatePatient({
               id="starting_date"
               name="starting_date"
               label="Fecha de inicio"
+              openTo="year"
+              views={["year", "month", "date"]}
               fullWidth
+              disableToolbar
               error={!!formState.errors?.starting_date}
             />
           </Grid>
