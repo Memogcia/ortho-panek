@@ -1,21 +1,21 @@
-import React from "react";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import { COMMON_ROUTES } from "constants/routes";
 import Container from "@material-ui/core/Container";
 import Copyright from "components/Copyright";
-import { COMMON_ROUTES } from "constants/routes";
-import { yupResolver } from "@hookform/resolvers/yup";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import React from "react";
+import { TextField } from "components/HFMUI";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 import signUpSchema from "components/SignUp/signUpSchema";
 import { useForm } from "react-hook-form";
-import { TextField } from "components/HFMUI";
 import { useRouter } from "next/dist/client/router";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -75,7 +75,7 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Crear cuenta
         </Typography>
         <form
           className={classes.form}
@@ -144,12 +144,12 @@ export default function SignUp() {
             color="primary"
             className={classes.submit}
           >
-            Sign Up
+            Crear cuenta
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href={COMMON_ROUTES.signIn} variant="body2">
-                Already have an account? Sign in
+                Ya tienes una cuenta? inicia sesión
               </Link>
             </Grid>
           </Grid>

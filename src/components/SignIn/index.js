@@ -1,21 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { Alert } from "@material-ui/lab";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import { COMMON_ROUTES } from "constants/routes";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { Snackbar } from "@material-ui/core";
+import { TextField } from "components/HFMUI";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import { COMMON_ROUTES } from "constants/routes";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { signIn } from "next-auth/client";
 import signInSchema from "components/SignIn/signInSchema";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/dist/client/router";
-import { signIn } from "next-auth/client";
-import { TextField } from "components/HFMUI";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Copyright from "../Copyright";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   const router = useRouter();
+  const [openSnack, setOpenSnack] = useState(false);
 
   const formOptions = {
     resolver: yupResolver(signInSchema),
@@ -51,6 +55,10 @@ export default function SignIn() {
   };
   const { control, handleSubmit, formState } = useForm(formOptions);
 
+  const closeSnackBar = () => {
+    setOpenSnack(false);
+  };
+
   const onSubmit = async ({ email, password }) => {
     const status = await signIn("credentials", {
       redirect: false,
@@ -58,7 +66,7 @@ export default function SignIn() {
       password,
     });
     if (status.ok) router.push("/patients");
-    console.log("🚀 ~ file: SignIn.js ~ line 63 ~ onSubmit ~ status", status);
+    else setOpenSnack(true);
   };
 
   return (
@@ -68,8 +76,19 @@ export default function SignIn() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
+        <Snackbar
+          open={openSnack}
+          autoHideDuration={6000}
+          onClose={closeSnackBar}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert onClose={closeSnackBar} severity="error">
+            Error al tratar de iniciar sesión por favor verifica tus
+            credenciales
+          </Alert>
+        </Snackbar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Iniciar sesión
         </Typography>
         <form
           className={classes.form}
@@ -109,17 +128,17 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Iniciar sesión
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              {/* <Link href="#" variant="body2">
                 Forgot password?
-              </Link>
+              </Link> */}
             </Grid>
             <Grid item>
               <Link href={COMMON_ROUTES.signUp} variant="body2">
-                Don&apos;t have an account? Sign Up
+                Crear cuenta
               </Link>
             </Grid>
           </Grid>
