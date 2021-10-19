@@ -7,3 +7,10 @@ export default Yup.object().shape({
   type: Yup.string().required(),
   comments: Yup.string(),
 });
+
+export const editSchema = Yup.object().shape({
+  start_date_time: Yup.date(),
+  end_date_time: Yup.date(),
+  type: Yup.string().required(),
+  comments: Yup.string(),
+});
