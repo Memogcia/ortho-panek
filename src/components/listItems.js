@@ -7,20 +7,20 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import PeopleIcon from "@material-ui/icons/People";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import React from "react";
 import TodayIcon from "@material-ui/icons/Today";
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
 
 export const mainListItems = (
   <div>
-    <Link href={COMMON_ROUTES.dashboard}>
+    {/* <Link href={COMMON_ROUTES.dashboard}>
       <ListItem button>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItem>
-    </Link>
+    </Link> */}
     {/* <ListItem button>
       <ListItemIcon>
         <ShoppingCartIcon />
