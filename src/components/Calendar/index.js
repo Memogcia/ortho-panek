@@ -259,7 +259,7 @@ const CalendarComponent = ({
                 id="start_date_time"
                 name="start_date_time"
                 label="Fecha de inicio"
-                format="dd/MM/yyyy HH:mm:ss"
+                format="dd/MM/yyyy HH:mm a"
                 error={!!formState.errors?.start_date_time}
                 fullWidth
               />
@@ -271,7 +271,7 @@ const CalendarComponent = ({
                 id="end_date_time"
                 name="end_date_time"
                 label="Fecha de fin"
-                format="dd/MM/yyyy HH:mm:ss"
+                format="dd/MM/yyyy HH:mm a"
                 error={!!formState.errors?.end_date_time}
                 fullWidth
               />
