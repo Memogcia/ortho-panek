@@ -1,8 +1,12 @@
+import { signOut, useSession } from "next-auth/client";
+
 import AppBar from "@material-ui/core/AppBar";
 import Badge from "@material-ui/core/Badge";
 import Box from "@material-ui/core/Box";
+import { Button } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Container from "@material-ui/core/Container";
+import Copyright from "components/Copyright";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,15 +14,12 @@ import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import PropTypes from "prop-types";
 import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
-import PropTypes from "prop-types";
-import { signOut, useSession } from "next-auth/client";
-import Copyright from "components/Copyright";
 import { mainListItems, secondaryListItems } from "./listItems";
 
 const drawerWidth = 240;
@@ -166,8 +167,8 @@ export default function Layout({ children }) {
         </div>
         <Divider />
         <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+        {/* <Divider />
+        <List>{secondaryListItems}</List> */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
