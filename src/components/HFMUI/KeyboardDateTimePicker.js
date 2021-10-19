@@ -1,12 +1,12 @@
-import React from "react";
-import { Controller } from "react-hook-form";
-import PropTypes from "prop-types";
-import DateFnsUtils from "@date-io/date-fns";
 import {
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 
+import { Controller } from "react-hook-form";
+import DateFnsUtils from "@date-io/date-fns";
+import PropTypes from "prop-types";
+import React from "react";
 import { es } from "date-fns/locale";
 
 const DateTimePicker = ({ control, name, ...rest }) => {
@@ -20,7 +20,6 @@ const DateTimePicker = ({ control, name, ...rest }) => {
             autoOk
             fullWidth
             disableFuture
-            disableToolbar
             variant="inline"
             inputVariant="outlined"
             format="dd/MM/yyyy"
