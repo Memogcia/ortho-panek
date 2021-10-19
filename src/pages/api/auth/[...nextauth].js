@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
@@ -12,6 +12,7 @@ export default NextAuth({
       async authorize(credentials, req) {
         const { email, password } = credentials;
         let passwordFromUser;
+        let user;
 
         const query = `query GetUserByEmailQuery($email: String = "") {
           users(where: {email: {_eq: $email}}) {
@@ -35,21 +36,21 @@ export default NextAuth({
         const parsedResponse = await response.json();
 
         if ("data" in parsedResponse && parsedResponse.data.users.length > 0) {
-          passwordFromUser = parsedResponse.data.users[0].password;
+          [user] = parsedResponse.data.users;
         } else {
           return null;
         }
 
-        const passwordMatch = await bcrypt.compare(password, passwordFromUser);
+        if (user.role === "user") return null;
+
+        const passwordMatch = await bcrypt.compare(
+          user.password,
+          passwordFromUser
+        );
 
         if (!passwordMatch) return null;
         return parsedResponse.data.users[0];
       },
-    }),
-    Providers.Auth0({
-      clientId: process.env.AUTH0_ID,
-      clientSecret: process.env.AUTH0_SECRET,
-      domain: process.env.AUTH0_DOMAIN,
     }),
   ],
   // The secret should be set to a reasonably long random string.
