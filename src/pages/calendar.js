@@ -4,12 +4,12 @@ import {
   useMutation,
   useSubscription,
 } from "@apollo/client";
-/* eslint-disable react/forbid-prop-types */
-import { makeStyles } from "@material-ui/core/styles";
 
+import CalendarComponent from "components/Calendar";
 import Paper from "@material-ui/core/Paper";
 import { getSession } from "next-auth/client";
-import CalendarComponent from "components/Calendar";
+/* eslint-disable react/forbid-prop-types */
+import { makeStyles } from "@material-ui/core/styles";
 
 const GET_APPOINTMENTS = gql`
   subscription GetAppointmentsSubscription {
@@ -34,6 +34,7 @@ const GET_APPOINTMENTS = gql`
 const GET_APPOINTMENT = gql`
   query GetAppintmentDetails($appointmentId: uuid = "") {
     appointments(where: { id: { _eq: $appointmentId } }) {
+      id
       comments
       end_date_time
       start_date_time
@@ -89,6 +90,30 @@ const INSERT_APPOINTMENT = gql`
   }
 `;
 
+const UPDATE_APPOINTMENT = gql`
+  mutation UpdateAppointmentMutation(
+    $id: uuid = ""
+    $type: String = ""
+    $start_date_time: timestamptz = ""
+    $end_date_time: timestamptz = ""
+    $comments: String = ""
+  ) {
+    update_appointments(
+      where: { id: { _eq: $id } }
+      _set: {
+        comments: $comments
+        end_date_time: $end_date_time
+        start_date_time: $start_date_time
+        type: $type
+      }
+    ) {
+      returning {
+        id
+      }
+    }
+  }
+`;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -105,6 +130,7 @@ function Calendar() {
   const classes = useStyles();
   const { data } = useSubscription(GET_APPOINTMENTS);
   const [insertAppointment] = useMutation(INSERT_APPOINTMENT);
+  const [updateAppointment] = useMutation(UPDATE_APPOINTMENT);
   const [
     getAppointment,
     { data: appointmentDetail, loading: isLoadingAppointmentDetail, error },
@@ -118,6 +144,7 @@ function Calendar() {
         getAppointment={getAppointment}
         appointmentDetail={appointmentDetail}
         isLoadingAppointmentDetail={isLoadingAppointmentDetail}
+        updateAppointment={updateAppointment}
       />
     </Paper>
   );
