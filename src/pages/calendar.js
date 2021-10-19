@@ -22,6 +22,7 @@ const GET_APPOINTMENTS = gql`
       # status
       type
       user {
+        id
         name
         # phone
         # cellphone
@@ -42,6 +43,7 @@ const GET_APPOINTMENT = gql`
       status
       type
       user {
+        id
         name
         phone
         cellphone
@@ -80,6 +82,7 @@ const INSERT_APPOINTMENT = gql`
         status
         type
         user {
+          id
           name
           email
           phone
@@ -109,6 +112,18 @@ const UPDATE_APPOINTMENT = gql`
     ) {
       returning {
         id
+        end_date_time
+        comments
+        patient_assisted
+        start_date_time
+        status
+        type
+        user {
+          name
+          email
+          phone
+          cellphone
+        }
       }
     }
   }
