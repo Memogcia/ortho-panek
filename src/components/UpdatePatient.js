@@ -61,8 +61,8 @@ export default function UpdatePatient({
     consulting_room: Yup.string().required(
       "El consultorio en el que se atendie es requerido"
     ),
-    cellphone: Yup.string(),
-    phone: Yup.string(),
+    cellphone: Yup.string().required(),
+    phone: Yup.string().required(),
     address: Yup.object().shape({
       address: Yup.string("La dirección es requerida"),
       colony: Yup.string("La colonia es requerida"),
