@@ -1,19 +1,19 @@
-import { gql, useMutation, useLazyQuery } from "@apollo/client";
-/* eslint-disable react/forbid-prop-types */
-import { makeStyles } from "@material-ui/core/styles";
-
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { getSession } from "next-auth/client";
-import MUIDataTable from "mui-datatables";
-import Statuses from "components/StatusesSelect";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { useEffect, useState } from "react";
-import useDebounce from "hooks/useDebounce";
+
+import { COMMON_ROUTES } from "constants/routes";
 import CreateIcon from "@material-ui/icons/Create";
+import Grid from "@material-ui/core/Grid";
 import { IconButton } from "@material-ui/core";
 import Link from "next/link";
-import { COMMON_ROUTES } from "constants/routes";
+import MUIDataTable from "mui-datatables";
+import Paper from "@material-ui/core/Paper";
+import Statuses from "components/StatusesSelect";
 import { format } from "date-fns";
+import { getSession } from "next-auth/client";
+/* eslint-disable react/forbid-prop-types */
+import { makeStyles } from "@material-ui/core/styles";
+import useDebounce from "hooks/useDebounce";
 
 const GET_PATIENTS = gql`
   query GET_PATIENTS($page: Int, $limit: Int, $name: String) {
@@ -57,7 +57,7 @@ function Patients() {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [nameToSearch, setNameToSearch] = useState("");
-  const [getPatients, { data, loading, error }] = useLazyQuery(GET_PATIENTS);
+  const [getPatients, { data }] = useLazyQuery(GET_PATIENTS);
   const [updateUserStatus] = useMutation(UPDATE_USER_STATUS);
   const debounceSearchTerm = useDebounce(nameToSearch, 500);
 

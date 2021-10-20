@@ -148,7 +148,7 @@ function Calendar() {
   const [updateAppointment] = useMutation(UPDATE_APPOINTMENT);
   const [
     getAppointment,
-    { data: appointmentDetail, loading: isLoadingAppointmentDetail, error },
+    { data: appointmentDetail, loading: isLoadingAppointmentDetail },
   ] = useLazyQuery(GET_APPOINTMENT);
 
   return (

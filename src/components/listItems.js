@@ -1,6 +1,5 @@
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { COMMON_ROUTES } from "constants/routes";
-import DashboardIcon from "@material-ui/icons/Dashboard";
 import Link from "next/link";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";

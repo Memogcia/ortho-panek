@@ -1,9 +1,11 @@
+/* eslint-disable no-param-reassign */
+import { CircularProgress, TextField } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { gql, useLazyQuery } from "@apollo/client";
 
 import { Autocomplete } from "@material-ui/lab";
-import { CircularProgress, TextField } from "@material-ui/core";
-import { gql, useLazyQuery } from "@apollo/client";
 import { Controller } from "react-hook-form";
+import PropTypes from "prop-types";
 import useDebounce from "hooks/useDebounce";
 
 const GET_PATIENT_BY_NAME_QUERY = gql`
@@ -16,8 +18,9 @@ const GET_PATIENT_BY_NAME_QUERY = gql`
 `;
 
 function AutoCompletePatients({ error, ...rest }) {
-  const [getPatients, { data, loading, error: getPatientsError }] =
-    useLazyQuery(GET_PATIENT_BY_NAME_QUERY);
+  const [getPatients, { data, loading }] = useLazyQuery(
+    GET_PATIENT_BY_NAME_QUERY
+  );
   const [patientToSearch, setPatientToSearch] = useState("");
   const [patients, setPatients] = useState([]);
   const debounceSearchPatient = useDebounce(patientToSearch, 500);
@@ -95,5 +98,13 @@ function AutoCompletePatients({ error, ...rest }) {
     />
   );
 }
+
+AutoCompletePatients.propTypes = {
+  error: PropTypes.bool,
+};
+
+AutoCompletePatients.defaultProps = {
+  error: false,
+};
 
 export default AutoCompletePatients;
