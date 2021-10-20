@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
@@ -11,7 +12,6 @@ export default NextAuth({
     Providers.Credentials({
       async authorize(credentials, req) {
         const { email, password } = credentials;
-        let passwordFromUser;
         let user;
 
         const query = `query GetUserByEmailQuery($email: String = "") {
@@ -43,10 +43,7 @@ export default NextAuth({
 
         if (user.role === "user") return null;
 
-        const passwordMatch = await bcrypt.compare(
-          user.password,
-          passwordFromUser
-        );
+        const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) return null;
         return parsedResponse.data.users[0];
