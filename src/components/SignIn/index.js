@@ -45,6 +45,7 @@ export default function SignIn() {
   const classes = useStyles();
   const router = useRouter();
   const [openSnack, setOpenSnack] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const formOptions = {
     resolver: yupResolver(signInSchema),
@@ -60,13 +61,15 @@ export default function SignIn() {
   };
 
   const onSubmit = async ({ email, password }) => {
+    setIsLoading(true);
     const status = await signIn("credentials", {
       redirect: false,
       email,
       password,
     });
-    if (status.ok) router.push("/patients");
+    if (status.ok) await router.push("/patients");
     else setOpenSnack(true);
+    setIsLoading(false);
   };
 
   return (
@@ -127,6 +130,7 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={isLoading}
           >
             Iniciar sesión
           </Button>
